@@ -40,6 +40,9 @@ jobs:
     container:
       image: nousresearch/hermes-agent@sha256:9c841866021c54c4596849f6135717e8a4d52ba510b7f52c50aef1de1a283973
       options: --user 0:0
+    defaults:
+      run:
+        shell: bash
     env:
       OPENAI_HOME: /tmp/robotelier-publication-hermes
     steps:
@@ -48,10 +51,16 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Install locked application
+      - name: Install pinned project runner
+        env:
+          UV_TOOL_BIN_DIR: /tmp/robotelier-uv/bin
+          UV_TOOL_DIR: /tmp/robotelier-uv/tools
         run: |
-          python3 -m pip install --disable-pip-version-check uv==0.12.2
-          uv sync --locked --all-groups
+          uv tool install --no-cache uv==0.12.2
+          test "$("$UV_TOOL_BIN_DIR/uv" --version)" = "uv 0.12.2"
+          echo "$UV_TOOL_BIN_DIR" >> "$GITHUB_PATH"
+      - name: Install locked application
+        run: uv sync --locked --all-groups
       - name: Resolve the Europe/Rome publication slot
         id: slot
         env:

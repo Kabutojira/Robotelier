@@ -115,6 +115,8 @@ def test_workflows_are_offline_for_prs_serialized_and_never_transfer_audio() -> 
         assert "ROBOTELIER_AGE_IDENTITY" not in text
         assert "ROBOTELIER_AGE_RECIPIENT" not in text
         assert ".robotelier/credentials/oauth-auth.json.age" in text
+        assert "python3 -m pip" not in text
+        assert "uv tool install --no-cache uv==0.12.2" in text
     assert "secrets.TELEGRAM_BOT_TOKEN" in publish_text
     assert "secrets.TELEGRAM_CHAT_ID" in publish_text
 
