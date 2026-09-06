@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Publication and outbox state",
+  "type": "object",
+  "required": ["schema_version", "publication_id", "episode_id", "intended_local_date", "destination_alias", "transcript", "telegram_text", "telegram_audio", "pages", "created_at", "updated_at"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "publication_id": {"type": "string"},
+    "episode_id": {"type": "string"},
+    "intended_local_date": {"type": "string", "format": "date"},
+    "destination_alias": {"type": "string"},
+    "transcript": {"type": "object"},
+    "telegram_text": {"type": "object"},
+    "telegram_audio": {"type": "object"},
+    "pages": {"type": "object"},
+    "created_at": {"type": "string"},
+    "updated_at": {"type": "string"}
+  },
+  "additionalProperties": true
+}
+

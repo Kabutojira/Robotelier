@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Evidence item",
+  "allOf": [{"$ref": "common.schema.json"}, {
+    "required": ["record_type", "source_revision_id", "locator", "support", "support_kind", "context", "evidence_type", "access_level"],
+    "properties": {
+      "record_type": {"const": "evidence"},
+      "source_revision_id": {"type": "string"},
+      "locator": {"type": "object", "required": ["coordinate_system", "value"], "properties": {"coordinate_system": {"enum": ["section_paragraph", "pdf_page", "figure", "table", "post_id", "repository_ref", "source_media_time"]}, "value": {}}, "additionalProperties": true},
+      "support": {"type": "string", "minLength": 1},
+      "support_kind": {"enum": ["quotation", "paraphrase"]},
+      "context": {"type": ["string", "null"]},
+      "evidence_type": {"type": "string"},
+      "access_level": {"type": "string"}
+    }
+  }]
+}
+

@@ -1,0 +1,80 @@
+[
+  {
+    "external_id": "maker-announcement-42",
+    "url": "https://fixture.example/announcements/42",
+    "title": "FixtureBot supervised picking trial",
+    "publisher": "Fixture Robotics",
+    "language": "en",
+    "published_at": "2026-09-01T09:00:00Z",
+    "event_at": "2026-08-29T00:00:00Z",
+    "source_kind": "company_announcement"
+  },
+  {
+    "external_id": "syndicated-report-a",
+    "url": "https://report-a.example/robotics/fixturebot",
+    "origin_url": "https://fixture.example/announcements/42",
+    "title": "FixtureBot result reported by outlet A",
+    "publisher": "Outlet A",
+    "language": "en",
+    "published_at": "2026-09-01T10:00:00Z",
+    "event_at": "2026-08-29T00:00:00Z",
+    "source_kind": "secondary_report"
+  },
+  {
+    "external_id": "syndicated-report-b",
+    "url": "https://report-b.example/news/fixturebot",
+    "origin_url": "https://fixture.example/announcements/42",
+    "title": "FixtureBot result reported by outlet B",
+    "publisher": "Outlet B",
+    "language": "fr",
+    "published_at": "2026-09-02T08:00:00Z",
+    "event_at": "2026-08-29T00:00:00Z",
+    "source_kind": "secondary_report"
+  },
+  {
+    "external_id": "old-demo-repost",
+    "url": "https://social.example/posts/old-demo-repost",
+    "origin_url": "https://fixture.example/demos/2024-unit",
+    "title": "A repost of the 2024 FixtureBot demonstration",
+    "publisher": "Unknown uploader",
+    "language": "en",
+    "published_at": "2026-09-05T18:00:00Z",
+    "event_at": "2024-03-01T00:00:00Z",
+    "source_kind": "repost",
+    "media": [
+      {
+        "media_type": "video",
+        "platform": "fixture-video",
+        "external_media_id": "old-demo-1",
+        "direct_asset_url": "https://cdn.example/old.mp4?sig=expiring-fixture",
+        "uploader": "Unknown uploader",
+        "original_creator": null,
+        "rights_status": "unknown",
+        "context": {
+          "depiction": "FixtureBot demonstrated unit",
+          "source_time_ranges": [
+            {
+              "coordinate_system": "source_media_time",
+              "start_seconds": 12.5,
+              "end_seconds": 19.0
+            }
+          ],
+          "reality": "real",
+          "speed_caveat": "unknown",
+          "teleoperation_caveat": "unknown",
+          "description_provenance": "source_metadata"
+        }
+      }
+    ]
+  },
+  {
+    "external_id": "independent-test-7",
+    "url": "https://independent-lab.example/tests/fixturebot-7",
+    "title": "Independent FixtureBot test with intervention log",
+    "publisher": "Independent Robotics Lab",
+    "language": "ja",
+    "published_at": "2026-09-04T04:00:00Z",
+    "event_at": "2026-08-31T00:00:00Z",
+    "source_kind": "independent_test"
+  }
+]

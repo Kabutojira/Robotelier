@@ -1,0 +1,53 @@
+name: Offline validation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: robotelier-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Use pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.14.4"
+      - name: Install pinned project runner
+        run: python -m pip install --disable-pip-version-check uv==0.12.2
+      - name: Install locked Python dependencies
+        run: uv sync --locked --all-groups
+      - name: Run offline controller gate
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+          uv run mypy src
+          uv run pytest -m "not live"
+          uv run robotelier config validate
+          uv run robotelier integrity check --strict
+      - name: Use pinned Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "24.4.1"
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - name: Install and build pinned Quartz
+        run: |
+          npm ci --prefix site --ignore-scripts
+          npm run check --prefix site
+          npm run build --prefix site
+      - name: Reject an empty or symlinked site
+        run: python -c 'from pathlib import Path; p=Path("site/public"); assert p.is_dir() and any(p.rglob("*.html")); assert not any(x.is_symlink() for x in p.rglob("*"))'

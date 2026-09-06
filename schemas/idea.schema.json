@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Podcast idea revision",
+  "allOf": [{"$ref": "common.schema.json"}, {
+    "required": ["record_type", "state", "working_title", "listener_question", "angle", "development_ids", "claim_revision_ids", "origin_group_ids", "evidence_gaps", "outline", "estimated_duration_seconds", "novelty_comparison", "scores", "reviewed_at", "revalidate_at"],
+    "properties": {
+      "record_type": {"const": "idea"},
+      "state": {"enum": ["proposed", "research_needed", "ready", "reserved", "scripted", "released", "merged", "expired", "rejected"]},
+      "working_title": {"type": "string"},
+      "listener_question": {"type": "string"},
+      "angle": {"type": "string"},
+      "development_ids": {"type": "array", "items": {"type": "string"}},
+      "claim_revision_ids": {"type": "array", "items": {"type": "string"}},
+      "origin_group_ids": {"type": "array", "items": {"type": "string"}},
+      "evidence_gaps": {"type": "array", "items": {"type": "string"}},
+      "outline": {"type": "array"},
+      "estimated_duration_seconds": {"type": "integer", "minimum": 1},
+      "novelty_comparison": {"type": "string"},
+      "scores": {"type": "object"},
+      "reviewed_at": {"type": ["string", "null"]},
+      "revalidate_at": {"type": ["string", "null"]}
+    }
+  }]
+}
+

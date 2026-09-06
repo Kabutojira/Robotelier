@@ -1,0 +1,207 @@
+name: Podcast publication
+
+on:
+  schedule:
+    - cron: "7 5 * * *"
+      timezone: "Europe/Rome"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        required: false
+        default: true
+        type: boolean
+      intended_slot:
+        required: false
+        default: ""
+        type: string
+      publish_pages:
+        required: false
+        default: false
+        type: boolean
+      send_telegram:
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: robotelier-write
+  cancel-in-progress: false
+
+jobs:
+  publication:
+    if: ${{ github.event_name == 'workflow_dispatch' || vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    permissions:
+      contents: write
+    container:
+      image: nousresearch/hermes-agent@sha256:9c841866021c54c4596849f6135717e8a4d52ba510b7f52c50aef1de1a283973
+      options: --user 0:0
+    env:
+      OPENAI_HOME: /tmp/robotelier-publication-hermes
+    steps:
+      - name: Check out exact public state
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install locked application
+        run: |
+          python3 -m pip install --disable-pip-version-check uv==0.12.2
+          uv sync --locked --all-groups
+      - name: Resolve the Europe/Rome publication slot
+        id: slot
+        env:
+          INPUT_DATE: ${{ inputs.intended_slot }}
+        run: |
+          local_date="${INPUT_DATE:-$(TZ=Europe/Rome date +%F)}"
+          date -d "$local_date" +%F >/dev/null
+          echo "local_date=$local_date" >> "$GITHUB_OUTPUT"
+      - name: Validate without side effects
+        if: ${{ inputs.dry_run || github.event_name == 'workflow_dispatch' }}
+        env:
+          LOCAL_DATE: ${{ steps.slot.outputs.local_date }}
+        run: |
+          uv run robotelier integrity check --strict
+          uv run robotelier publication status --local-date "$LOCAL_DATE"
+          uv run robotelier cadence status
+      - name: Require controlled live publication inputs
+        if: ${{ !inputs.dry_run && vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' }}
+        env:
+          OPENAI_OAUTH_SECRET: ${{ secrets.OPENAI_OAUTH_SECRET }}
+        run: |
+          test -n "$OPENAI_OAUTH_SECRET"
+          uv run robotelier agent configure --profile editorial --hermes-home "$OPENAI_HOME" --replace-unmanaged
+          HERMES_HOME="$OPENAI_HOME" hermes skills opt-in --sync
+          archive="$RUNNER_TEMP/age-v1.3.1-linux-amd64.tar.gz"
+          curl --fail --location --proto '=https' --tlsv1.2 --output "$archive" "https://github.com/FiloSottile/age/releases/download/v1.3.1/age-v1.3.1-linux-amd64.tar.gz"
+          echo "bdc69c09cbdd6cf8b1f333d372a1f58247b3a33146406333e30c0f26e8f51377  $archive" | sha256sum --check --status
+          tar --extract --gzip --file "$archive" --directory "$RUNNER_TEMP"
+          install -m 755 "$RUNNER_TEMP/age/age" /usr/local/bin/age
+          install -m 755 "$RUNNER_TEMP/age/age-keygen" /usr/local/bin/age-keygen
+          test "$(age --version)" = "v1.3.1"
+          test "$(age-keygen --version)" = "v1.3.1"
+          install -m 600 /dev/null /tmp/robotelier-age-identity
+          printf '%s\n' "$OPENAI_OAUTH_SECRET" > /tmp/robotelier-age-identity
+          unset OPENAI_OAUTH_SECRET
+          uv run robotelier credential restore --profile editorial --hermes-home "$OPENAI_HOME" --identity-file /tmp/robotelier-age-identity
+          rm -f /tmp/robotelier-age-identity
+          uv run robotelier integrity check --strict
+      - name: Freeze committed selection and queue writer
+        id: episode
+        if: ${{ !inputs.dry_run && vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' }}
+        env:
+          LOCAL_DATE: ${{ steps.slot.outputs.local_date }}
+        run: |
+          result=$(uv run robotelier podcast prepare --local-date "$LOCAL_DATE")
+          printf '%s\n' "$result"
+          READY_RESULT="$result" python3 -c 'import json,os; value=json.loads(os.environ["READY_RESULT"]); print("ready=" + str(value.get("status") == "writer_queued").lower())' >> "$GITHUB_OUTPUT"
+      - name: Write and independently review the exact frozen package
+        if: ${{ steps.episode.outputs.ready == 'true' }}
+        env:
+          LOCAL_DATE: ${{ steps.slot.outputs.local_date }}
+          RUN_ID: publication-${{ steps.slot.outputs.local_date }}-${{ github.run_id }}
+        run: |
+          uv run robotelier agent preflight --profile editorial --hermes-home "$OPENAI_HOME" --live
+          uv run robotelier agent run --profile editorial --hermes-home "$OPENAI_HOME" --run-id "$RUN_ID" --cycle-id "$LOCAL_DATE" --maximum-operations 20
+          uv run robotelier agent configure --profile deep --hermes-home "$OPENAI_HOME"
+          HERMES_HOME="$OPENAI_HOME" hermes skills opt-in --sync
+          uv run robotelier agent preflight --profile deep --hermes-home "$OPENAI_HOME" --live
+          uv run robotelier agent run --profile deep --hermes-home "$OPENAI_HOME" --run-id "$RUN_ID" --cycle-id "$LOCAL_DATE" --maximum-operations 20
+          uv run robotelier integrity check --strict
+      - name: Persist refreshed OAuth and commit transcript before delivery
+        id: transcript
+        if: ${{ steps.episode.outputs.ready == 'true' }}
+        env:
+          OPENAI_OAUTH_SECRET: ${{ secrets.OPENAI_OAUTH_SECRET }}
+          LOCAL_DATE: ${{ steps.slot.outputs.local_date }}
+          ROBOTELIER_GIT_TOKEN: ${{ github.token }}
+          TARGET_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          test -n "$OPENAI_OAUTH_SECRET"
+          install -m 600 /dev/null /tmp/robotelier-age-identity
+          printf '%s\n' "$OPENAI_OAUTH_SECRET" > /tmp/robotelier-age-identity
+          unset OPENAI_OAUTH_SECRET
+          uv run robotelier credential seal --profile deep --hermes-home "$OPENAI_HOME" --identity-file /tmp/robotelier-age-identity
+          rm -f /tmp/robotelier-age-identity
+          result=$(uv run robotelier publication prepare --local-date "$LOCAL_DATE")
+          printf '%s\n' "$result"
+          TRANSCRIPT_RESULT="$result" python3 -c 'import json,os; value=json.loads(os.environ["TRANSCRIPT_RESULT"]); print("committed=" + str(value.get("status") == "transcript_committed").lower())' >> "$GITHUB_OUTPUT"
+          uv run robotelier integrity check --strict
+          test -z "$(git status --porcelain | awk '$2 !~ /^data\// && $2 != ".robotelier/credentials/oauth-auth.json.age" {print}')"
+          git add --all -- data .robotelier/credentials/oauth-auth.json.age
+          git diff --cached --check
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name robotelier-bot
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git commit -m "podcast: commit reviewed transcript for ${LOCAL_DATE}"
+          git fetch --no-tags origin "$TARGET_BRANCH"
+          git rebase "origin/$TARGET_BRANCH"
+          uv run robotelier integrity check --strict
+          git config --local credential.helper '!f() { if test "$1" = get; then echo username=x-access-token; echo "password=$ROBOTELIER_GIT_TOKEN"; fi; }; f'
+          git push "https://github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/$TARGET_BRANCH"
+          git config --local --unset-all credential.helper
+      - name: Check controlled 06:00-08:00 delivery window
+        id: window
+        if: ${{ steps.transcript.outputs.committed == 'true' && (inputs.send_telegram || vars.ROBOTELIER_SEND_TELEGRAM == 'true') }}
+        env:
+          LOCAL_DATE: ${{ steps.slot.outputs.local_date }}
+        run: |
+          python3 - <<'PY'
+          import datetime, os, time
+          from zoneinfo import ZoneInfo
+          day = datetime.date.fromisoformat(os.environ["LOCAL_DATE"])
+          zone = ZoneInfo("Europe/Rome")
+          release = datetime.datetime.combine(day, datetime.time(6), zone).timestamp()
+          late = datetime.datetime.combine(day, datetime.time(8), zone).timestamp()
+          now = time.time()
+          if now < release:
+              time.sleep(release - now)
+              now = time.time()
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"in_window={str(now <= late).lower()}\n")
+          PY
+      - name: Render and send on the same temporary runner
+        if: ${{ steps.window.outputs.in_window == 'true' }}
+        env:
+          LOCAL_DATE: ${{ steps.slot.outputs.local_date }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          test -n "$TELEGRAM_BOT_TOKEN" -a -n "$TELEGRAM_CHAT_ID"
+          uv run robotelier publication deliver --local-date "$LOCAL_DATE"
+          uv run robotelier integrity check --strict
+          test -z "$(find /tmp -maxdepth 1 -type d -name 'robotelier-render_*' -print -quit)"
+      - name: Commit independent delivery receipts
+        if: ${{ steps.window.outputs.in_window == 'true' && always() }}
+        env:
+          LOCAL_DATE: ${{ steps.slot.outputs.local_date }}
+          ROBOTELIER_GIT_TOKEN: ${{ github.token }}
+          TARGET_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          uv run robotelier integrity check --strict
+          git add --all -- data
+          git diff --cached --check
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name robotelier-bot
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git commit -m "delivery: record ${LOCAL_DATE} channel receipts"
+          git fetch --no-tags origin "$TARGET_BRANCH"
+          git rebase "origin/$TARGET_BRANCH"
+          uv run robotelier integrity check --strict
+          git config --local credential.helper '!f() { if test "$1" = get; then echo username=x-access-token; echo "password=$ROBOTELIER_GIT_TOKEN"; fi; }; f'
+          git push "https://github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/$TARGET_BRANCH"
+          git config --local --unset-all credential.helper
+      - name: Record honest no-episode or missed-window status
+        if: ${{ !inputs.dry_run && vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' && (steps.episode.outputs.ready != 'true' || steps.transcript.outputs.committed != 'true' || steps.window.outputs.in_window == 'false') }}
+        env:
+          LOCAL_DATE: ${{ steps.slot.outputs.local_date }}
+        run: |
+          uv run robotelier recovery inspect --slot "$LOCAL_DATE"
+          echo "No material was fabricated and no ambiguous delivery was replayed."
+      - name: Remove plaintext OAuth from the temporary home
+        if: ${{ always() }}
+        run: rm -f "$OPENAI_HOME/auth.json" /tmp/robotelier-age-identity

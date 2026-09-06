@@ -1,0 +1,34 @@
+[
+  {
+    "case_id": "supported-number-unsupported-conclusion",
+    "source_support": "The maker reported nine successes in ten supervised attempts.",
+    "candidate_clause": "The robot achieved nine successes and is therefore fully autonomous.",
+    "expected": "reject",
+    "reason_code": "unsupported_clause"
+  },
+  {
+    "case_id": "self-citation-loop",
+    "source_kind": "robotelier_podcast",
+    "candidate_use": "independent_corroboration",
+    "expected": "reject",
+    "reason_code": "self_citation"
+  },
+  {
+    "case_id": "unknown-intervention",
+    "known": {"supervision": true, "autonomy": null, "interventions": null},
+    "candidate_clause": "The robot operated without human intervention.",
+    "expected": "reject",
+    "reason_code": "missing_conditions"
+  },
+  {
+    "case_id": "dense-outline",
+    "outline": ["question", "maker evidence", "independent evidence", "limitations", "implications"],
+    "expected": "eligible_for_review"
+  },
+  {
+    "case_id": "padded-outline",
+    "outline": ["long greeting", "generic robotics history", "repeat greeting"],
+    "expected": "reject",
+    "reason_code": "too_thin"
+  }
+]

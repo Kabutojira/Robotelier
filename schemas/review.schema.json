@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Semantic review",
+  "allOf": [{"$ref": "common.schema.json"}, {
+    "required": ["record_type", "target_revision_id", "reviewer_operation_id", "accepted", "findings", "gates"],
+    "properties": {
+      "record_type": {"const": "review"},
+      "target_revision_id": {"type": "string"},
+      "reviewer_operation_id": {"type": "string"},
+      "accepted": {"type": "boolean"},
+      "findings": {"type": "array"},
+      "gates": {"type": "object"}
+    }
+  }]
+}
+

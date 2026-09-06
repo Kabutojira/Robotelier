@@ -1,0 +1,30 @@
+[
+  {
+    "query_id": "humanoid_capability",
+    "query": "humanoid robot capability demonstration deployment autonomy teleoperation",
+    "category": "humanoid",
+    "rotation_weight": 3,
+    "non_exhaustive": true
+  },
+  {
+    "query_id": "manipulation_learning",
+    "query": "robot manipulation learning foundation model physical AI",
+    "category": "robot_learning",
+    "rotation_weight": 2,
+    "non_exhaustive": true
+  },
+  {
+    "query_id": "industrial_mobile",
+    "query": "industrial mobile robot deployment safety integrator",
+    "category": "broader_robotics",
+    "rotation_weight": 1,
+    "non_exhaustive": true
+  },
+  {
+    "query_id": "components_value_chain",
+    "query": "robotics actuator sensor gripper component supplier",
+    "category": "value_chain",
+    "rotation_weight": 1,
+    "non_exhaustive": true
+  }
+]

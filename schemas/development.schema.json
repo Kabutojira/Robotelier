@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Development revision",
+  "allOf": [{"$ref": "common.schema.json"}, {
+    "required": ["record_type", "title", "event_at", "source_ids", "entity_ids", "claim_revision_ids", "origin_group_ids", "novelty"],
+    "properties": {
+      "record_type": {"const": "development"},
+      "title": {"type": "string"},
+      "event_at": {"type": ["string", "null"]},
+      "source_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+      "entity_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+      "claim_revision_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+      "origin_group_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+      "novelty": {"type": "object"}
+    }
+  }]
+}
+

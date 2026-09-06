@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Relationship revision",
+  "allOf": [{"$ref": "common.schema.json"}, {
+    "required": ["record_type", "subject_id", "predicate", "object_id", "claim_revision_ids", "evidence_ids", "status", "confidence"],
+    "properties": {
+      "record_type": {"const": "relationship"},
+      "subject_id": {"type": "string"},
+      "predicate": {"enum": ["manufactures", "supplies", "integrates", "uses", "deploys", "develops", "funds", "competes_with", "successor_of", "demonstrated_at", "depends_on"]},
+      "object_id": {"type": "string"},
+      "claim_revision_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+      "evidence_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+      "status": {"type": "string"},
+      "confidence": {"type": "object"}
+    }
+  }]
+}
+

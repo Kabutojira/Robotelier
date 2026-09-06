@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Operation result",
+  "type": "object",
+  "required": ["schema_version", "operation_id", "attempt_id", "outcome", "reason_code", "receipts", "usage"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "operation_id": {"type": "string", "pattern": "^operation_[0-9a-f]{20}$"},
+    "attempt_id": {"type": "string", "pattern": "^attempt_[0-9a-f]{20}$"},
+    "outcome": {"enum": ["succeeded", "skipped", "blocked", "failed", "expired"]},
+    "reason_code": {"type": ["string", "null"]},
+    "receipts": {"type": "array", "items": {"type": "object"}},
+    "usage": {"type": "object"}
+  },
+  "additionalProperties": false
+}

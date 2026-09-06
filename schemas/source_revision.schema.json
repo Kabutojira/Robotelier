@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Source access observation",
+  "allOf": [{"$ref": "common.schema.json"}, {
+    "required": ["record_type", "source_id", "published_at", "event_at", "modified_at", "retrieved_at", "date_precision", "access_status", "retrieval_method", "effective_url", "content_hash", "hash_scope", "retained_excerpt", "english_summary", "observation_id"],
+    "properties": {
+      "record_type": {"const": "source_revision"},
+      "source_id": {"type": "string"},
+      "published_at": {"type": ["string", "null"]},
+      "event_at": {"type": ["string", "null"]},
+      "modified_at": {"type": ["string", "null"]},
+      "retrieved_at": {"type": "string", "pattern": "Z$"},
+      "date_precision": {"enum": ["second", "minute", "day", "month", "year", "unknown"]},
+      "access_status": {"enum": ["inspected", "partially_inspected", "metadata_only", "unavailable", "deleted", "access_restricted", "contradicted", "retracted"]},
+      "retrieval_method": {"type": "string"},
+      "effective_url": {"type": ["string", "null"]},
+      "content_hash": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+      "hash_scope": {"enum": ["full_response", "extracted_text", "metadata", "none"]},
+      "retained_excerpt": {"type": ["string", "null"]},
+      "english_summary": {"type": ["string", "null"]},
+      "observation_id": {"type": "string"}
+    }
+  }]
+}
+

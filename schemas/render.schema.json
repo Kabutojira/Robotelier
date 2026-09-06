@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Render metadata",
+  "type": "object",
+  "required": ["schema_version", "render_id", "episode_id", "transcript_hash", "source_commit", "voice", "backend_version", "duration_seconds", "audio_sha256", "audio_bytes", "timing_method", "timings", "created_at"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "render_id": {"type": "string"},
+    "episode_id": {"type": "string"},
+    "transcript_hash": {"type": "string"},
+    "source_commit": {"type": "string"},
+    "voice": {"type": "string"},
+    "backend_version": {"type": "string"},
+    "duration_seconds": {"type": "number", "minimum": 0},
+    "audio_sha256": {"type": "string"},
+    "audio_bytes": {"type": "integer", "minimum": 0},
+    "timing_method": {"enum": ["observed_boundaries", "chunk_duration", "approximate"]},
+    "timings": {"type": "array"},
+    "created_at": {"type": "string"}
+  },
+  "additionalProperties": true
+}
+

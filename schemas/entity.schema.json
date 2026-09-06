@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Entity revision",
+  "allOf": [{"$ref": "common.schema.json"}, {
+    "type": "object",
+    "required": ["record_type", "entity_type", "display_name", "aliases", "canonical_urls", "external_ids", "lifecycle", "wiki_path"],
+    "properties": {
+      "record_type": {"const": "entity"},
+      "entity_type": {"enum": ["company", "organization", "robot_family", "robot_version", "robot_configuration", "demonstrated_unit", "technology", "component", "deployment", "research_work", "event"]},
+      "display_name": {"type": "string", "minLength": 1},
+      "aliases": {"type": "array", "items": {"type": "object", "required": ["name", "language"], "properties": {"name": {"type": "string"}, "language": {"type": ["string", "null"]}}, "additionalProperties": true}},
+      "canonical_urls": {"type": "array", "items": {"type": "string", "format": "uri"}, "uniqueItems": true},
+      "external_ids": {"type": "object"},
+      "parent_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+      "lifecycle": {"enum": ["concept", "prototype", "demonstrated_system", "pilot", "commercially_offered", "documented_deployment", "discontinued", "unknown"]},
+      "planned_availability": {"type": ["object", "null"]},
+      "actual_availability": {"type": ["object", "null"]},
+      "review_at": {"type": ["string", "null"]},
+      "wiki_path": {"type": "string", "pattern": "^data/wiki/.*\\.md$"}
+    }
+  }]
+}
+

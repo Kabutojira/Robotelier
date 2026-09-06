@@ -1,0 +1,36 @@
+{
+  "name": "robotelier-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22",
+    "npm": ">=10.9.2"
+  },
+  "scripts": {
+    "prepare-engine": "node prepare-quartz.mjs",
+    "prebuild": "npm run prepare-engine",
+    "build": "node build-quartz.mjs",
+    "check": "npm run prepare-engine && tsc --noEmit && prettier quartz.config.ts quartz.layout.ts prepare-quartz.mjs build-quartz.mjs index.d.ts globals.d.ts --check"
+  },
+  "dependencies": {
+    "@jackyzha0/quartz": "https://github.com/jackyzha0/quartz/archive/4923affa7722dfc751f1074348e6dad214fe0c08.tar.gz"
+  },
+  "devDependencies": {
+    "@types/d3": "7.4.3",
+    "@types/hast": "3.0.4",
+    "@types/js-yaml": "4.0.9",
+    "@types/mdast": "4.0.4",
+    "@types/node": "24.3.1",
+    "@types/pretty-time": "1.1.5",
+    "@types/source-map-support": "0.5.10",
+    "@types/ws": "8.18.1",
+    "@types/yargs": "17.0.35",
+    "prettier": "3.9.6",
+    "typescript": "5.9.2"
+  },
+  "overrides": {
+    "property-information": "6.2.0",
+    "sharp": "0.35.3"
+  }
+}

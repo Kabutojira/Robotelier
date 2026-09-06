@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Operation",
+  "type": "object",
+  "required": ["schema_version", "operation_id", "operation_type", "payload_hash", "dedupe_key", "priority", "depends_on", "earliest_start", "deadline", "resource_budget", "allowed_paths", "allowed_commands", "source_refs", "state", "attempts", "max_attempts", "lease", "created_at", "updated_at"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "operation_id": {"type": "string", "pattern": "^operation_[0-9a-f]{20}$"},
+    "operation_type": {"type": "string"},
+    "payload_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "dedupe_key": {"type": "string", "minLength": 1},
+    "priority": {"type": "integer", "minimum": 0, "maximum": 100},
+    "depends_on": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "earliest_start": {"type": ["string", "null"]},
+    "deadline": {"type": ["string", "null"]},
+    "resource_budget": {"type": "object"},
+    "allowed_paths": {"type": "array", "items": {"type": "string"}},
+    "allowed_commands": {"type": "array", "items": {"type": "string"}},
+    "source_refs": {"type": "array", "items": {"type": "string"}},
+    "state": {"enum": ["queued", "leased", "succeeded", "skipped", "blocked", "failed", "cancelled", "superseded"]},
+    "attempts": {"type": "array"},
+    "max_attempts": {"type": "integer", "minimum": 1},
+    "lease": {"type": ["object", "null"]},
+    "created_at": {"type": "string"},
+    "updated_at": {"type": "string"}
+  },
+  "additionalProperties": true
+}
+

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Media metadata revision",
+  "allOf": [{"$ref": "common.schema.json"}, {
+    "required": ["record_type", "media_type", "platform", "external_media_id", "source_revision_ids", "identity_basis", "dedupe_aliases", "page_url", "direct_asset_url", "direct_url_status", "uploader", "original_creator", "rights_status", "title", "description", "entity_ids", "claim_revision_ids", "technical", "context", "availability", "reuse_readiness"],
+    "properties": {
+      "record_type": {"const": "media"},
+      "media_type": {"enum": ["image", "video", "audio"]},
+      "platform": {"type": ["string", "null"]},
+      "external_media_id": {"type": ["string", "null"]},
+      "source_revision_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+      "identity_basis": {"type": "string"},
+      "dedupe_aliases": {"type": "array", "items": {"type": "string"}},
+      "page_url": {"type": "string", "format": "uri"},
+      "direct_asset_url": {"type": ["string", "null"]},
+      "direct_url_status": {"enum": ["stable", "omitted_signed", "unknown", "unavailable"]},
+      "uploader": {"type": ["string", "null"]},
+      "original_creator": {"type": ["string", "null"]},
+      "rights_status": {"enum": ["unknown", "restricted", "permitted"]},
+      "title": {"type": ["string", "null"]},
+      "description": {"type": ["string", "null"]},
+      "entity_ids": {"type": "array", "items": {"type": "string"}},
+      "claim_revision_ids": {"type": "array", "items": {"type": "string"}},
+      "technical": {"type": "object"},
+      "context": {"type": "object"},
+      "availability": {"type": "object"},
+      "reuse_readiness": {"type": "object"}
+    }
+  }]
+}
+

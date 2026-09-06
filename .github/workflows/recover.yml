@@ -1,0 +1,40 @@
+name: Recovery and status
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+      timezone: "Europe/Rome"
+  workflow_dispatch:
+    inputs:
+      intended_slot:
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: robotelier-write
+  cancel-in-progress: false
+
+jobs:
+  inspect:
+    if: ${{ github.event_name == 'workflow_dispatch' || vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - run: |
+          python3 -m pip install --disable-pip-version-check uv==0.12.2
+          uv sync --locked
+      - name: Inspect without replaying ambiguous side effects
+        env:
+          INPUT_DATE: ${{ inputs.intended_slot }}
+        run: |
+          local_date="${INPUT_DATE:-$(TZ=Europe/Rome date +%F)}"
+          uv run robotelier recovery inspect --slot "$local_date"
+          uv run robotelier cadence status
+          uv run robotelier integrity check --strict

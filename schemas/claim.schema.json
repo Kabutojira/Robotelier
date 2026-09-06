@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Atomic claim revision",
+  "allOf": [{"$ref": "common.schema.json"}, {
+    "required": ["record_type", "subject_id", "predicate", "value", "units", "conditions", "valid_at", "modality", "epistemic_status", "supporting_evidence_ids", "contradicting_evidence_ids", "confidence_rationale", "origin_group_ids", "premise_claim_revision_ids", "review_at"],
+    "properties": {
+      "record_type": {"const": "claim"},
+      "subject_id": {"type": "string"},
+      "predicate": {"type": "string", "minLength": 1},
+      "value": {},
+      "units": {"type": ["string", "null"]},
+      "conditions": {"type": "object"},
+      "valid_at": {"type": ["string", "null"]},
+      "modality": {"type": "string"},
+      "epistemic_status": {"enum": ["reported_fact", "maker_claim", "independent_observation", "forecast", "disputed_assertion", "robotelier_inference"]},
+      "supporting_evidence_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+      "contradicting_evidence_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+      "confidence_rationale": {"type": "string"},
+      "origin_group_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+      "premise_claim_revision_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+      "review_at": {"type": ["string", "null"]}
+    }
+  }]
+}
+

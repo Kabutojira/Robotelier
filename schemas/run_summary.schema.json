@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Run summary",
+  "type": "object",
+  "required": ["schema_version", "run_id", "intended_local_date", "started_at", "completed_at", "status", "operation_ids", "channel_states", "incidents"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "intended_local_date": {"type": "string", "format": "date"},
+    "started_at": {"type": "string"},
+    "completed_at": {"type": ["string", "null"]},
+    "status": {"enum": ["prepared", "succeeded", "degraded", "blocked", "failed"]},
+    "operation_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "channel_states": {"type": "object"},
+    "incidents": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

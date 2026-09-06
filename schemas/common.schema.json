@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://robotelier.example/schemas/common.schema.json",
+  "title": "Robotelier canonical record",
+  "type": "object",
+  "required": ["schema_version", "record_type", "id", "revision_id", "created_at", "originating_operation_id", "supersedes"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_type": {"type": "string", "minLength": 1},
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*_[0-9a-f]{20}$"},
+    "revision_id": {"type": "string", "pattern": "^rev_[0-9a-f]{20}$"},
+    "created_at": {"type": "string", "format": "date-time", "pattern": "Z$"},
+    "originating_operation_id": {"type": "string", "minLength": 1},
+    "supersedes": {"type": ["string", "null"]}
+  },
+  "additionalProperties": true
+}
+

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Podcast script draft revision",
+  "allOf": [
+    {"$ref": "common.schema.json"},
+    {
+      "required": [
+        "record_type",
+        "episode_id",
+        "frozen_bundle_hash",
+        "writer_operation_id",
+        "segments",
+        "show_notes",
+        "repair_round",
+        "draft_hash",
+        "status"
+      ],
+      "properties": {
+        "record_type": {"const": "script"},
+        "episode_id": {"type": "string", "pattern": "^episode_[0-9a-f]{20}$"},
+        "frozen_bundle_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "writer_operation_id": {"type": "string", "pattern": "^operation_[0-9a-f]{20}$"},
+        "segments": {"type": "array", "minItems": 1},
+        "show_notes": {"type": "string"},
+        "repair_round": {"type": "integer", "minimum": 0, "maximum": 2},
+        "draft_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "status": {"enum": ["pending_review", "accepted", "rejected", "superseded"]}
+      }
+    }
+  ]
+}

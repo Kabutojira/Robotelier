@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Source identity revision",
+  "allOf": [{"$ref": "common.schema.json"}, {
+    "required": ["record_type", "canonical_url", "discovered_url", "publisher", "original_title", "language", "platform", "source_kind", "origin_group_id"],
+    "properties": {
+      "record_type": {"const": "source"},
+      "canonical_url": {"type": "string", "format": "uri"},
+      "discovered_url": {"type": "string", "format": "uri"},
+      "publisher": {"type": ["string", "null"]},
+      "author": {"type": ["string", "null"]},
+      "original_title": {"type": "string"},
+      "language": {"type": ["string", "null"]},
+      "platform": {"type": ["string", "null"]},
+      "stable_external_id": {"type": ["string", "null"]},
+      "source_kind": {"type": "string"},
+      "origin_group_id": {"type": "string"},
+      "original_source_url": {"type": ["string", "null"]}
+    }
+  }]
+}
+

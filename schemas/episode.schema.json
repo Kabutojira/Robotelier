@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Episode revision",
+  "allOf": [{"$ref": "common.schema.json"}, {
+    "required": ["record_type", "idea_revision_id", "intended_local_date", "source_commit", "frozen_bundle_hash", "language", "narrator_count", "segments", "review", "transcript_hash", "show_notes"],
+    "properties": {
+      "record_type": {"const": "episode"},
+      "idea_revision_id": {"type": "string"},
+      "intended_local_date": {"type": "string", "format": "date"},
+      "source_commit": {"type": "string"},
+      "frozen_bundle_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+      "language": {"const": "en"},
+      "narrator_count": {"const": 1},
+      "segments": {"type": "array", "items": {"type": "object", "required": ["segment_id", "role", "spoken_text", "claim_revision_ids", "media_candidates"], "properties": {"segment_id": {"type": "string"}, "role": {"enum": ["factual", "greeting", "transition", "conclusion", "correction"]}, "spoken_text": {"type": "string"}, "claim_revision_ids": {"type": "array", "items": {"type": "string"}}, "media_candidates": {"type": "array"}}, "additionalProperties": true}},
+      "review": {"type": "object"},
+      "transcript_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+      "show_notes": {"type": "string"}
+    }
+  }]
+}
+
