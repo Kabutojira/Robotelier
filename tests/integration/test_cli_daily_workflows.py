@@ -26,6 +26,17 @@ def test_cli_configuration_integrity_and_dry_discovery(repo: Path, monkeypatch: 
         __import__("os").chdir(current)
 
 
+def test_strict_integrity_cli_fails_closed(repo: Path) -> None:
+    marker = repo / "unsafe.txt"
+    marker.write_text("access_" + "token = " + "abcdefghijklmnopqrstuvwxyz\n")
+    current = Path.cwd()
+    try:
+        __import__("os").chdir(repo)
+        assert main(["integrity", "check", "--strict"]) == 2
+    finally:
+        __import__("os").chdir(current)
+
+
 def test_daily_dry_run_has_no_mutations(repo: Path) -> None:
     before = snapshot(repo)
     result = prepare(
@@ -120,6 +131,17 @@ def test_workflows_are_offline_for_prs_serialized_and_never_transfer_audio() -> 
         assert '== "uv 0.12.2"*' in text
     assert "secrets.TELEGRAM_BOT_TOKEN" in publish_text
     assert "secrets.TELEGRAM_CHAT_ID" in publish_text
+    assert "secrets.TELEGRAM_BOT_TOKEN" in research_text
+    assert "secrets.TELEGRAM_CHAT_ID" in research_text
+    assert "report prepare-summary" in research_text
+    assert "report deliver-summary" in research_text
+    assert "report verify-summary" in research_text
+    assert "--publish-pages" in research_text
+    assert "--send-telegram" in research_text
+    pages_text = (root / ".github/workflows/pages.yml").read_text()
+    assert "vars.ROBOTELIER_PAGES_ENABLED == 'true'" in pages_text
+    assert "vars.ROBOTELIER_PRODUCTION_ENABLED" not in pages_text
+    assert "actions/deploy-pages@" in pages_text
 
 
 def test_workflow_schedules_match_contract() -> None:

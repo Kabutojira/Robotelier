@@ -31,6 +31,16 @@ on:
         required: false
         default: ""
         type: string
+      publish_pages:
+        description: Publish the committed wiki after a successful live run
+        required: false
+        default: true
+        type: boolean
+      send_telegram:
+        description: Send the committed daily report summary after a successful live run
+        required: false
+        default: true
+        type: boolean
 
 permissions:
   contents: read
@@ -82,17 +92,30 @@ jobs:
           local_date="${INPUT_DATE:-$(TZ=Europe/Rome date +%F)}"
           date -d "$local_date" +%F >/dev/null
           run_id="research-${local_date}-${GITHUB_RUN_ID}"
+          publish_pages="${{ inputs.publish_pages }}"
+          send_telegram="${{ inputs.send_telegram }}"
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            publish_pages="${{ vars.ROBOTELIER_PAGES_ENABLED }}"
+            send_telegram="${{ vars.ROBOTELIER_SEND_TELEGRAM }}"
+          fi
           echo "local_date=$local_date" >> "$GITHUB_OUTPUT"
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "publish_pages=$publish_pages" >> "$GITHUB_OUTPUT"
+          echo "send_telegram=$send_telegram" >> "$GITHUB_OUTPUT"
       - name: Offline preflight and dry-run contract
         env:
           LOCAL_DATE: ${{ steps.cycle.outputs.local_date }}
           RUN_ID: ${{ steps.cycle.outputs.run_id }}
           INPUT_MAX: ${{ inputs.maximum_operations || '20' }}
+          PUBLISH_PAGES: ${{ steps.cycle.outputs.publish_pages }}
+          SEND_TELEGRAM: ${{ steps.cycle.outputs.send_telegram }}
         run: |
           uv run robotelier integrity check --strict
           if [ "${{ inputs.dry_run || github.event_name == 'workflow_dispatch' }}" = "true" ]; then
-            uv run robotelier daily prepare --run-id "$RUN_ID" --intended-slot "$LOCAL_DATE" --trigger "${{ github.event_name }}" --dry-run --maximum-operations "$INPUT_MAX"
+            channel_args=()
+            if [ "$PUBLISH_PAGES" = "true" ]; then channel_args+=(--publish-pages); fi
+            if [ "$SEND_TELEGRAM" = "true" ]; then channel_args+=(--send-telegram); fi
+            uv run robotelier daily prepare --run-id "$RUN_ID" --intended-slot "$LOCAL_DATE" --trigger "${{ github.event_name }}" --dry-run --maximum-operations "$INPUT_MAX" "${channel_args[@]}"
           fi
       - name: Stop after dry run
         if: ${{ inputs.dry_run || (github.event_name == 'workflow_dispatch' && inputs.dry_run == null) }}
@@ -136,8 +159,13 @@ jobs:
           LOCAL_DATE: ${{ steps.cycle.outputs.local_date }}
           RUN_ID: ${{ steps.cycle.outputs.run_id }}
           INPUT_MAX: ${{ inputs.maximum_operations || '20' }}
+          PUBLISH_PAGES: ${{ steps.cycle.outputs.publish_pages }}
+          SEND_TELEGRAM: ${{ steps.cycle.outputs.send_telegram }}
         run: |
-          uv run robotelier daily prepare --run-id "$RUN_ID" --intended-slot "$LOCAL_DATE" --trigger "${{ github.event_name }}" --maximum-operations "$INPUT_MAX"
+          channel_args=()
+          if [ "$PUBLISH_PAGES" = "true" ]; then channel_args+=(--publish-pages); fi
+          if [ "$SEND_TELEGRAM" = "true" ]; then channel_args+=(--send-telegram); fi
+          uv run robotelier daily prepare --run-id "$RUN_ID" --intended-slot "$LOCAL_DATE" --trigger "${{ github.event_name }}" --maximum-operations "$INPUT_MAX" "${channel_args[@]}"
           uv run robotelier agent preflight --profile scout --hermes-home "$OPENAI_HOME" --live
           uv run robotelier agent preflight --profile x --hermes-home "$GROK_HOME" --live
           uv run robotelier agent run --profile scout --hermes-home "$OPENAI_HOME" --run-id "$RUN_ID" --cycle-id "$LOCAL_DATE" --maximum-operations "$INPUT_MAX"
@@ -164,25 +192,93 @@ jobs:
             uv run robotelier credential seal --profile x --hermes-home "$GROK_HOME" --identity-file /tmp/robotelier-age-identity
           fi
           rm -f /tmp/robotelier-age-identity
+      - name: Remove plaintext OAuth from temporary homes
+        if: ${{ always() }}
+        run: rm -f "$OPENAI_HOME/auth.json" "$GROK_HOME/auth.json" /tmp/robotelier-age-identity
       - name: Commit validated public state
+        id: research_commit
         if: ${{ !inputs.dry_run && vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' && always() }}
         run: |
           test -z "$(git status --porcelain | awk '$2 !~ /^data\// && $2 != ".robotelier/credentials/oauth-auth.json.age" {print}')"
           git add --all -- data .robotelier/credentials/oauth-auth.json.age
           git diff --cached --check
-          if git diff --cached --quiet; then exit 0; fi
+          if git diff --cached --quiet; then
+            echo "source_commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           git config user.name robotelier-bot
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git commit -m "research: record daily robotics cycle"
           git fetch --no-tags origin "$TARGET_BRANCH"
           git rebase "origin/$TARGET_BRANCH"
           uv run robotelier integrity check --strict
+          trap 'git config --local --unset-all credential.helper || true' EXIT
           git config --local credential.helper '!f() { if test "$1" = get; then echo username=x-access-token; echo "password=$ROBOTELIER_GIT_TOKEN"; fi; }; f'
           git push "https://github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/$TARGET_BRANCH"
-          git config --local --unset-all credential.helper
+          echo "source_commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
         env:
           ROBOTELIER_GIT_TOKEN: ${{ github.token }}
           TARGET_BRANCH: ${{ github.event.repository.default_branch }}
-      - name: Remove plaintext OAuth from temporary homes
-        if: ${{ always() }}
-        run: rm -f "$OPENAI_HOME/auth.json" "$GROK_HOME/auth.json" /tmp/robotelier-age-identity
+      - name: Prepare committed daily report summary intent
+        id: summary_intent
+        if: ${{ success() && !inputs.dry_run && vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' && steps.cycle.outputs.send_telegram == 'true' }}
+        env:
+          LOCAL_DATE: ${{ steps.cycle.outputs.local_date }}
+          DELIVERY_RUN_ID: ${{ steps.cycle.outputs.run_id }}
+          SOURCE_COMMIT: ${{ steps.research_commit.outputs.source_commit }}
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          repository_name="${GITHUB_REPOSITORY#*/}"
+          report_slug="daily-report_${LOCAL_DATE//-/}"
+          report_url="https://${owner}.github.io/${repository_name}/daily-reports/${report_slug}"
+          uv run robotelier report prepare-summary --local-date "$LOCAL_DATE" --source-commit "$SOURCE_COMMIT" --report-url "$report_url" --delivery-run-id "$DELIVERY_RUN_ID"
+          uv run robotelier integrity check --strict
+      - name: Commit daily report summary intent
+        if: ${{ success() && steps.summary_intent.outcome == 'success' }}
+        env:
+          ROBOTELIER_GIT_TOKEN: ${{ github.token }}
+          TARGET_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          git add -- data/published/daily-reports
+          git diff --cached --check
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "delivery: record daily report summary intent"
+          git fetch --no-tags origin "$TARGET_BRANCH"
+          git rebase "origin/$TARGET_BRANCH"
+          uv run robotelier integrity check --strict
+          trap 'git config --local --unset-all credential.helper || true' EXIT
+          git config --local credential.helper '!f() { if test "$1" = get; then echo username=x-access-token; echo "password=$ROBOTELIER_GIT_TOKEN"; fi; }; f'
+          git push "https://github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/$TARGET_BRANCH"
+      - name: Deliver committed daily report summary
+        id: summary_delivery
+        if: ${{ success() && steps.summary_intent.outcome == 'success' }}
+        env:
+          LOCAL_DATE: ${{ steps.cycle.outputs.local_date }}
+          DELIVERY_RUN_ID: ${{ steps.cycle.outputs.run_id }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          test -n "$TELEGRAM_BOT_TOKEN"
+          test -n "$TELEGRAM_CHAT_ID"
+          uv run robotelier report deliver-summary --local-date "$LOCAL_DATE" --delivery-run-id "$DELIVERY_RUN_ID"
+      - name: Commit daily report delivery receipt
+        if: ${{ always() && steps.summary_delivery.outcome != 'skipped' }}
+        env:
+          ROBOTELIER_GIT_TOKEN: ${{ github.token }}
+          TARGET_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          git add -- data/published/daily-reports
+          git diff --cached --check
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "delivery: record daily report summary result"
+          git fetch --no-tags origin "$TARGET_BRANCH"
+          git rebase "origin/$TARGET_BRANCH"
+          uv run robotelier integrity check --strict
+          trap 'git config --local --unset-all credential.helper || true' EXIT
+          git config --local credential.helper '!f() { if test "$1" = get; then echo username=x-access-token; echo "password=$ROBOTELIER_GIT_TOKEN"; fi; }; f'
+          git push "https://github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/$TARGET_BRANCH"
+      - name: Require acknowledged daily report delivery
+        if: ${{ always() && steps.summary_intent.outcome == 'success' }}
+        env:
+          LOCAL_DATE: ${{ steps.cycle.outputs.local_date }}
+        run: uv run robotelier report verify-summary --local-date "$LOCAL_DATE"

@@ -19,3 +19,8 @@ Every external channel is independent. Research, transcript, Telegram text, Tele
 Pages states can succeed or fail separately. An ambiguous Telegram side effect is reconciled by an
 operator and is never blindly repeated.
 
+For the daily report channel, the research state and report are committed first. The controller then
+derives a bounded summary from that exact commit, commits a destination-alias-only send intent, and
+only afterward exposes Telegram credentials to a trusted delivery step. The acknowledgment receipt
+contains the provider message ID but never the private chat ID or bot token. Quartz deployment is a
+separate read-only build triggered from successful committed workflows.

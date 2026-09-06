@@ -1,7 +1,8 @@
 # Operations
 
-Production is opt-in. Keep `publication.enabled=false`, `publish_pages=false`, and
-`send_telegram=false` until all live probes and the intended destination test have passed.
+Model production is opt-in and remains controlled by `publication.enabled` plus
+`ROBOTELIER_PRODUCTION_ENABLED`. Pages and daily-report Telegram summaries have independent channel
+flags and receipts, so publishing the metadata-only wiki does not imply that live model probes passed.
 
 ## Offline validation
 
@@ -90,6 +91,19 @@ exit. `X_API_KEY` is ignored even if present locally; paid X API fallback remain
 Local Telegram commands use the existing `.env` names `TELEGRAM_BOT_TOKEN` and
 `TELEGRAM_CHAT_ID`. `WIKI_PATH` may be supplied but must resolve to this checkout's `data/wiki`.
 
+A daily summary is derived only from the report at an exact committed Git SHA. Preparing it writes
+an idempotent public intent with a logical destination alias; the trusted workflow commits that
+intent before it introduces Telegram secrets. An ambiguous response blocks a different workflow run
+from resending until it is reconciled.
+
+```bash
+uv run robotelier report prepare-summary --local-date 2026-09-06 --source-commit <full-sha> \
+  --report-url https://kabutojira.github.io/Robotelier/daily-reports/daily-report_20260906 \
+  --delivery-run-id manual-20260906
+uv run robotelier report deliver-summary --local-date 2026-09-06 --delivery-run-id manual-20260906
+uv run robotelier report verify-summary --local-date 2026-09-06
+```
+
 ## Local audited harness
 
 ```bash
@@ -130,11 +144,18 @@ scheduler runs only from the default branch and may be delayed or skipped. Publi
 scheduled workflows can be disabled after inactivity. Recovery is an in-repository status pass, not
 an independent monitor.
 
-Leave `ROBOTELIER_PRODUCTION_ENABLED` and `ROBOTELIER_PAGES_ENABLED` unset until every live item in
-`docs/IMPLEMENTATION.md` has an actual receipt. Set `ROBOTELIER_SEND_TELEGRAM=true` only after the
-identified test destination succeeds. Manual workflow dispatch defaults to dry-run.
+Leave `ROBOTELIER_PRODUCTION_ENABLED` unset until the live model items in
+`docs/IMPLEMENTATION.md` have actual receipts. `ROBOTELIER_PAGES_ENABLED=true` publishes the Quartz
+wiki after successful research/publication workflows. Set `ROBOTELIER_SEND_TELEGRAM=true` only for
+the identified destination. Manual research dispatch defaults to dry-run and exposes both channel
+flags explicitly.
 Unknown Telegram delivery must be reconciled with provider message IDs or an operator-verified
 not-delivered result before the stage can resume.
+
+GitHub Pages uses Actions as its build source and publishes the default branch at
+`https://kabutojira.github.io/Robotelier/`. The Pages workflow can also be dispatched manually with
+`publish_pages=true`; its artifact contains only generated Quartz HTML/static assets and is retained
+for one day by the deployment service.
 
 Create the immutable cadence anchor once, in the reviewed activation commit, immediately before
 enabling production:

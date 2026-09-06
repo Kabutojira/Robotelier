@@ -7,6 +7,13 @@ the Telegram destination alias. Tokens and destination IDs remain environment or
 state. A repository-local `.env` is ignored and may be sourced for local commands; workflows map the
 same names from GitHub secrets. `X_API_KEY` is deliberately unsupported.
 
+The checked-in publication channel intent enables `publish_pages` and `send_telegram`, while the
+separate `publication.enabled` and repository `ROBOTELIER_PRODUCTION_ENABLED` gates remain false
+until live model acceptance. `ROBOTELIER_PAGES_ENABLED` controls deployment independently so the
+metadata-only wiki can remain available even when model production is paused. Daily Telegram
+summaries use only `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`; neither value is written to a report
+or delivery receipt.
+
 Numbers carry units in their key names. Cost accounting distinguishes known metered USD from
 unknown subscription cost. Unknown does not mean free; operation, turn, time, and weighted limits
 remain enforced.

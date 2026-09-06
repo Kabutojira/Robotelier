@@ -75,6 +75,11 @@ from robotelier.publication import (
 from robotelier.publication import status as publication_status
 from robotelier.recovery import inspect as recovery_inspect
 from robotelier.recovery import resume as recovery_resume
+from robotelier.reports import (
+    daily_summary_status,
+    prepare_daily_summary,
+    require_daily_summary_acknowledged,
+)
 from robotelier.sources import (
     Adapter,
     FeedAdapter,
@@ -84,7 +89,7 @@ from robotelier.sources import (
     WebPageAdapter,
 )
 from robotelier.subscriptions import add_subscription, validate_registry
-from robotelier.telegram import deliver_audio, deliver_text, reconcile
+from robotelier.telegram import deliver_audio, deliver_daily_summary, deliver_text, reconcile
 from robotelier.utils import (
     ContractError,
     content_hash,
@@ -376,6 +381,14 @@ def _parser() -> argparse.ArgumentParser:
     daily["prepare"].add_argument("--send-telegram", action=argparse.BooleanOptionalAction, default=False)
     daily["prepare"].add_argument("--resume-id")
     daily["finalize"].add_argument("--run-id", required=True)
+    report = actions("report", ["prepare-summary", "deliver-summary", "status", "verify-summary"])
+    report["prepare-summary"].add_argument("--local-date", required=True)
+    report["prepare-summary"].add_argument("--source-commit", required=True)
+    report["prepare-summary"].add_argument("--report-url", required=True)
+    report["prepare-summary"].add_argument("--delivery-run-id", required=True)
+    report["deliver-summary"].add_argument("--delivery-run-id", required=True)
+    for name in ("deliver-summary", "status", "verify-summary"):
+        report[name].add_argument("--local-date", required=True)
 
     source = actions("source", ["register", "observe", "validate"])
     source["register"].add_argument("--request", required=True)
@@ -540,6 +553,26 @@ def _dispatch(root: Path, args: argparse.Namespace) -> object:
         )
     if key == ("daily", "finalize"):
         return daily_finalize(root, run_id=args.run_id)
+    if key == ("report", "prepare-summary"):
+        return prepare_daily_summary(
+            root,
+            local_date=args.local_date,
+            source_commit=args.source_commit,
+            report_url=args.report_url,
+            delivery_run_id=args.delivery_run_id,
+        )
+    if key == ("report", "deliver-summary"):
+        return deliver_daily_summary(
+            root,
+            local_date=args.local_date,
+            delivery_run_id=args.delivery_run_id,
+            token=os.environ["TELEGRAM_BOT_TOKEN"],
+            chat_id=os.environ["TELEGRAM_CHAT_ID"],
+        )
+    if key == ("report", "status"):
+        return daily_summary_status(root, local_date=args.local_date)
+    if key == ("report", "verify-summary"):
+        return require_daily_summary_acknowledged(root, local_date=args.local_date)
     if key == ("source", "register"):
         return _source_register(root, _request(args))
     if key == ("source", "observe"):
@@ -790,6 +823,8 @@ def _dispatch(root: Path, args: argparse.Namespace) -> object:
         raise ContractError("live native maintenance requires the scheduled audited harness")
     if key == ("integrity", "check"):
         errors = validate_integrity(root, strict=args.strict)
+        if args.strict and errors:
+            raise ContractError("strict integrity check failed: " + "; ".join(errors))
         return {"passed": not errors, "errors": errors}
     if key == ("recovery", "inspect"):
         return recovery_inspect(root, local_date=args.slot)

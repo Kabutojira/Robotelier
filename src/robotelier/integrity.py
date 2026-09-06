@@ -181,6 +181,32 @@ def _outbox_errors(root: Path) -> list[str]:
     return errors
 
 
+def _daily_summary_errors(root: Path) -> list[str]:
+    errors: list[str] = []
+    base = root / "data" / "published" / "daily-reports"
+    states = {"intent_written", "acknowledged", "failed", "delivery_unknown", "reconciliation_required"}
+    for path in sorted(base.glob("*.telegram.json")) if base.exists() else []:
+        value = json.loads(path.read_text(encoding="utf-8"))
+        relative = path.relative_to(root)
+        local_date = value.get("local_date")
+        if path.name != f"{local_date}.telegram.json":
+            errors.append(f"{relative}: daily summary date/path mismatch")
+        if value.get("state") not in states:
+            errors.append(f"{relative}: invalid daily summary state")
+        if not re.fullmatch(r"[0-9a-f]{40}", str(value.get("source_commit", ""))):
+            errors.append(f"{relative}: invalid daily summary source commit")
+        message_id = value.get("message_id")
+        if value.get("state") == "acknowledged":
+            if not isinstance(message_id, int):
+                errors.append(f"{relative}: acknowledged daily summary lacks message ID")
+        elif message_id is not None:
+            errors.append(f"{relative}: unacknowledged daily summary has a message ID")
+        serialized = json.dumps(value).upper()
+        if any(secret in serialized for secret in ("BOT_TOKEN", "CHAT_ID", "AUTHORIZATION")):
+            errors.append(f"{relative}: private destination/auth data in daily summary receipt")
+    return errors
+
+
 def validate_integrity(root: Path, *, strict: bool = False) -> list[str]:
     errors = [
         *_record_errors(root),
@@ -195,6 +221,7 @@ def validate_integrity(root: Path, *, strict: bool = False) -> list[str]:
         *_credential_errors(root),
         *_episode_errors(root),
         *_outbox_errors(root),
+        *_daily_summary_errors(root),
     ]
     if strict:
         errors.extend(lint_wiki(root))

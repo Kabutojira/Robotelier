@@ -14,6 +14,12 @@ from typing import Any
 
 from robotelier.config import load_settings
 from robotelier.publication import outbox_path, update_channel
+from robotelier.reports import (
+    daily_summary_status,
+    load_committed_daily_report,
+    render_daily_summary,
+    update_daily_summary,
+)
 from robotelier.utils import ContractError, content_hash, format_timestamp, utc_now
 
 
@@ -124,6 +130,75 @@ def _commit_acknowledgment(
         # reconciliation receipt cannot be written; never retry it blindly.
         raise TelegramError("provider acknowledged delivery but receipt commit failed") from exc
     return state
+
+
+def deliver_daily_summary(
+    root: Path,
+    *,
+    local_date: str,
+    delivery_run_id: str,
+    token: str,
+    chat_id: str,
+    sender: Callable[[str, dict[str, Any], int], dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Deliver one summary whose intent and exact source commit are already durable."""
+
+    settings = load_settings(root).telegram
+    intent = daily_summary_status(root, local_date=local_date)
+    current_state = intent.get("state")
+    if current_state == "acknowledged":
+        return intent
+    if current_state != "intent_written":
+        raise TelegramError(f"daily summary cannot be delivered from {current_state}")
+    if intent.get("delivery_run_id") != delivery_run_id:
+        raise TelegramError("daily summary intent belongs to another delivery run")
+    report = load_committed_daily_report(
+        root,
+        local_date=local_date,
+        source_commit=str(intent.get("source_commit", "")),
+    )
+    message = render_daily_summary(report, report_url=str(intent.get("report_url", "")))
+    if content_hash(report) != intent.get("report_hash") or content_hash(message) != intent.get("message_sha256"):
+        raise TelegramError("daily summary does not match its committed report binding")
+    send = sender or _post_json
+    try:
+        response = send(
+            f"https://api.telegram.org/bot{token}/sendMessage",
+            {"chat_id": chat_id, "text": message},
+            settings.timeout_seconds,
+        )
+        message_id = _message_id(response)
+    except urllib.error.HTTPError as exc:
+        state = {
+            **intent,
+            "state": "failed",
+            "reason_code": f"telegram_http_{exc.code}",
+        }
+        return update_daily_summary(root, local_date=local_date, state=state)
+    except TelegramError:
+        state = {**intent, "state": "failed", "reason_code": "telegram_rejected"}
+        return update_daily_summary(root, local_date=local_date, state=state)
+    except (TimeoutError, OSError, json.JSONDecodeError):
+        state = {**intent, "state": "delivery_unknown", "reason_code": "response_lost"}
+        return update_daily_summary(root, local_date=local_date, state=state)
+    state = {
+        **intent,
+        "state": "acknowledged",
+        "acknowledged_at": format_timestamp(utc_now()),
+        "message_id": message_id,
+        "reason_code": None,
+    }
+    try:
+        return update_daily_summary(root, local_date=local_date, state=state)
+    except OSError as exc:
+        reconciliation = {
+            **intent,
+            "state": "reconciliation_required",
+            "reason_code": "provider_acknowledged_receipt_commit_failed",
+        }
+        with suppress(OSError):
+            update_daily_summary(root, local_date=local_date, state=reconciliation)
+        raise TelegramError("provider acknowledged daily summary but receipt commit failed") from exc
 
 
 def deliver_text(

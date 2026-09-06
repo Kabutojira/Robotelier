@@ -33,6 +33,9 @@ uv run robotelier integrity check --strict
 
 Run `uv run robotelier --help` for the implemented command tree. Live probes and delivery are
 explicit; dry runs do not perform inference, research, rendering, commits, pushes, or sends.
+The public metadata-only Quartz wiki is deployed at
+[kabutojira.github.io/Robotelier](https://kabutojira.github.io/Robotelier/). Successful live daily
+runs send a concise Telegram summary derived from the exact committed daily report.
 
 The product contract is [AGENTS.md](AGENTS.md), the delivery plan is [PLAN.md](PLAN.md), and safe
 operation is documented in [docs/OPERATIONS.md](docs/OPERATIONS.md).

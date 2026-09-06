@@ -10,7 +10,7 @@ This file records executed implementation evidence. A documented contract is not
   digest but has not been live-probed.
 - Locked Python environment: `uv sync --locked --all-groups` passed with uv 0.12.2 and Python
   3.14.4.
-- Python verification: Ruff passed; strict mypy passed for `src`; pytest passed all 76
+- Python verification: Ruff passed; strict mypy passed for `src`; pytest passed all 80
   offline tests.
 - Controller verification: all 18 JSON Schemas parsed; configuration, offline doctor, strict
   integrity, and mutation-free daily dry-run passed.
@@ -47,11 +47,11 @@ allowlists only the verified age ciphertext.
 
 ## Live blockers
 
-The live Grok OAuth evidence probe, actual OpenAI model profiles, native LLMWiki invocation, Edge
-TTS service rendering, controlled Telegram delivery, and GitHub Pages deployment require the
-initial public commit and configured external credentials/services. `profile_x.model` deliberately
-remains `UNCONFIGURED_PIN_REQUIRED`; production flags remain false. The encrypted OAuth envelope is
-present, but authentication and evidence behavior are not accepted until their explicit live
-commands succeed.
+The live Grok OAuth evidence probe reached xAI from the exact pinned Hermes container through the
+capability-scoped encrypted credential, but the advertised `grok-build-0.1` model returned the typed
+provider blocker `personal-team-blocked:spending-limit`. No paid fallback was enabled and
+`profile_x.model` deliberately remains `UNCONFIGURED_PIN_REQUIRED`. Actual OpenAI model profiles,
+native LLMWiki invocation, Edge TTS service rendering, controlled Telegram delivery, and GitHub
+Pages deployment still require their explicit live receipts; model production remains disabled.
 
 See `docs/ACCEPTANCE.md` for the offline acceptance coverage and deliberately open live cases.
