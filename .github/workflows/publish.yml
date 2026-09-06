@@ -57,7 +57,7 @@ jobs:
           UV_TOOL_DIR: /tmp/robotelier-uv/tools
         run: |
           uv tool install --no-cache uv==0.12.2
-          test "$("$UV_TOOL_BIN_DIR/uv" --version)" = "uv 0.12.2"
+          [[ "$("$UV_TOOL_BIN_DIR/uv" --version)" == "uv 0.12.2"* ]]
           echo "$UV_TOOL_BIN_DIR" >> "$GITHUB_PATH"
       - name: Install locked application
         run: uv sync --locked --all-groups
