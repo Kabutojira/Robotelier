@@ -86,6 +86,7 @@ jobs:
         run: |
           test -n "$OPENAI_OAUTH_SECRET"
           uv run robotelier agent configure --profile editorial --hermes-home "$OPENAI_HOME" --replace-unmanaged
+          chown --recursive hermes:hermes "$OPENAI_HOME"
           HERMES_HOME="$OPENAI_HOME" hermes skills opt-in --sync
           archive="$RUNNER_TEMP/age-v1.3.1-linux-amd64.tar.gz"
           curl --fail --location --proto '=https' --tlsv1.2 --output "$archive" "https://github.com/FiloSottile/age/releases/download/v1.3.1/age-v1.3.1-linux-amd64.tar.gz"
@@ -99,6 +100,8 @@ jobs:
           printf '%s\n' "$OPENAI_OAUTH_SECRET" > /tmp/robotelier-age-identity
           unset OPENAI_OAUTH_SECRET
           uv run robotelier credential restore --profile editorial --hermes-home "$OPENAI_HOME" --identity-file /tmp/robotelier-age-identity
+          chown hermes:hermes "$OPENAI_HOME/auth.json"
+          test "$(stat -c %a "$OPENAI_HOME/auth.json")" = "600"
           rm -f /tmp/robotelier-age-identity
           uv run robotelier integrity check --strict
       - name: Freeze committed selection and queue writer
@@ -119,6 +122,7 @@ jobs:
           uv run robotelier agent preflight --profile editorial --hermes-home "$OPENAI_HOME" --live
           uv run robotelier agent run --profile editorial --hermes-home "$OPENAI_HOME" --run-id "$RUN_ID" --cycle-id "$LOCAL_DATE" --maximum-operations 20
           uv run robotelier agent configure --profile deep --hermes-home "$OPENAI_HOME"
+          chown --recursive hermes:hermes "$OPENAI_HOME"
           HERMES_HOME="$OPENAI_HOME" hermes skills opt-in --sync
           uv run robotelier agent preflight --profile deep --hermes-home "$OPENAI_HOME" --live
           uv run robotelier agent run --profile deep --hermes-home "$OPENAI_HOME" --run-id "$RUN_ID" --cycle-id "$LOCAL_DATE" --maximum-operations 20

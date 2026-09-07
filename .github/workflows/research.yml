@@ -128,6 +128,7 @@ jobs:
         if: ${{ !inputs.dry_run && vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' }}
         run: |
           uv run robotelier agent configure --profile scout --hermes-home "$OPENAI_HOME" --replace-unmanaged
+          chown --recursive hermes:hermes "$OPENAI_HOME"
           HERMES_HOME="$OPENAI_HOME" hermes skills opt-in --sync
       - name: Install checksum-verified age 1.3.1
         if: ${{ !inputs.dry_run && vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' }}
@@ -150,6 +151,8 @@ jobs:
           printf '%s\n' "$OPENAI_OAUTH_SECRET" > /tmp/robotelier-age-identity
           unset OPENAI_OAUTH_SECRET
           uv run robotelier credential restore --profile scout --hermes-home "$OPENAI_HOME" --identity-file /tmp/robotelier-age-identity
+          chown hermes:hermes "$OPENAI_HOME/auth.json"
+          test "$(stat -c %a "$OPENAI_HOME/auth.json")" = "600"
           rm -f /tmp/robotelier-age-identity
       - name: Run strictly sequential profiles
         if: ${{ !inputs.dry_run && vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' }}
@@ -167,10 +170,12 @@ jobs:
           uv run robotelier agent preflight --profile scout --hermes-home "$OPENAI_HOME" --live
           uv run robotelier agent run --profile scout --hermes-home "$OPENAI_HOME" --run-id "$RUN_ID" --cycle-id "$LOCAL_DATE" --maximum-operations "$INPUT_MAX"
           uv run robotelier agent configure --profile x --hermes-home "$OPENAI_HOME"
+          chown --recursive hermes:hermes "$OPENAI_HOME"
           HERMES_HOME="$OPENAI_HOME" hermes skills opt-in --sync
           uv run robotelier agent preflight --profile x --hermes-home "$OPENAI_HOME" --live
           uv run robotelier agent run --profile x --hermes-home "$OPENAI_HOME" --run-id "$RUN_ID" --cycle-id "$LOCAL_DATE" --maximum-operations "$INPUT_MAX"
           uv run robotelier agent configure --profile editorial --hermes-home "$OPENAI_HOME"
+          chown --recursive hermes:hermes "$OPENAI_HOME"
           HERMES_HOME="$OPENAI_HOME" hermes skills opt-in --sync
           uv run robotelier agent preflight --profile editorial --hermes-home "$OPENAI_HOME" --live
           uv run robotelier agent run --profile editorial --hermes-home "$OPENAI_HOME" --run-id "$RUN_ID" --cycle-id "$LOCAL_DATE" --maximum-operations "$INPUT_MAX"

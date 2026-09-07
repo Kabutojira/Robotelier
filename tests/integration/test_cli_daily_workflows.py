@@ -123,6 +123,9 @@ def test_workflows_are_offline_for_prs_serialized_and_never_transfer_audio() -> 
     publish_text = (root / ".github/workflows/publish.yml").read_text()
     for text in (research_text, publish_text):
         assert 'git config --global --add safe.directory "$GITHUB_WORKSPACE"' in text
+        assert 'chown --recursive hermes:hermes "$OPENAI_HOME"' in text
+        assert 'chown hermes:hermes "$OPENAI_HOME/auth.json"' in text
+        assert 'test "$(stat -c %a "$OPENAI_HOME/auth.json")" = "600"' in text
         assert "secrets.OPENAI_OAUTH_SECRET" in text
         assert "ROBOTELIER_AGE_IDENTITY" not in text
         assert "ROBOTELIER_AGE_RECIPIENT" not in text
