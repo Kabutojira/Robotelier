@@ -8,7 +8,8 @@ import yaml
 
 from robotelier.audit import compare, snapshot
 from robotelier.cli import main
-from robotelier.daily import prepare
+from robotelier.daily import finalize, prepare
+from robotelier.integrity import validate_integrity
 from robotelier.operations import all_operations
 
 
@@ -98,6 +99,27 @@ def test_daily_prepare_seeds_one_bounded_sequential_chain(repo: Path) -> None:
     )
     assert repeated["seeded_operations"] == result["seeded_operations"]
     assert len(all_operations(repo)) == 5
+
+
+def test_daily_finalize_rebuilds_navigation_for_generated_report(repo: Path) -> None:
+    prepare(
+        repo,
+        run_id="daily-finalize-fixture",
+        intended_local_date="2026-09-06",
+        trigger="scheduled-like",
+        dry_run=False,
+        maximum_operations=20,
+        publish_pages=True,
+        send_telegram=True,
+        resume_id=None,
+    )
+
+    result = finalize(repo, run_id="daily-finalize-fixture")
+
+    relative = "daily-reports/daily-report_20260906.md"
+    assert result["report_path"] == f"data/wiki/{relative}"
+    assert f"]({relative})" in (repo / "data/wiki/index.md").read_text()
+    assert validate_integrity(repo, strict=True) == []
 
 
 def test_workflows_are_offline_for_prs_serialized_and_never_transfer_audio() -> None:

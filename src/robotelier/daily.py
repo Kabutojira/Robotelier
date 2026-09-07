@@ -8,6 +8,7 @@ from typing import Any
 from robotelier.cadence import activate, slot_for_date
 from robotelier.config import load_settings
 from robotelier.editorial import select
+from robotelier.knowledge import build_wiki
 from robotelier.operations import enqueue, initialize_cycle, validate_queue
 from robotelier.operations import prepare as prepare_queue
 from robotelier.reports import build_daily_report
@@ -181,6 +182,7 @@ def finalize(root: Path, *, run_id: str, incidents: list[str] | None = None) -> 
         ),
     }
     report = build_daily_report(root, local_date=document["intended_local_date"], incidents=incidents)
+    build_wiki(root)
     document.update(
         {
             "phase": "finalized",

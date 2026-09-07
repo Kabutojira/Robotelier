@@ -86,6 +86,7 @@ def test_agent_environment_excludes_unrelated_secrets(repo: Path, tmp_path: Path
         "ROBOTELIER_AUDIT_OPERATION_ID",
         "ROBOTELIER_AUDIT_PATH",
     }
+    assert environment["PATH"] == f"{repo / '.venv/bin'}:/usr/bin"
     assert "XAI_API_KEY" not in environment
 
 
@@ -101,6 +102,9 @@ def test_valid_local_harness_operation_succeeds_once(repo: Path) -> None:
         cycle_id="2026-09-06",
     )
     result_path = repo / started["result_path"]
+    controller_prompt = (repo / started["controller_prompt"]).read_text()
+    assert f"`{started['result_path']}`" in controller_prompt
+    assert "The project CLI is available as `robotelier`" in controller_prompt
     result_path.write_text(
         json.dumps(
             {
