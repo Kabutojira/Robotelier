@@ -1,0 +1,58 @@
+{
+  "dry_run": false,
+  "finalized_at": "2026-09-07T07:55:31Z",
+  "intended_local_date": "2026-09-07",
+  "maximum_operations": 20,
+  "phase": "finalized",
+  "prepared_at": "2026-09-07T07:43:48Z",
+  "production": {
+    "selection": {
+      "snapshot": {
+        "candidates": [],
+        "policy_version": "editorial-v1",
+        "reference_time": "2026-09-07T07:55:31Z",
+        "schema_version": 1,
+        "snapshot_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "status": "no_episode_insufficient_material"
+    },
+    "status": "no_episode_insufficient_material"
+  },
+  "publish_pages": true,
+  "queue": {
+    "ready": [
+      "operation_e1f17fef1ba5b9f664c6",
+      "operation_f300d9e9b19b3981b88e"
+    ],
+    "terminalized": [],
+    "waiting": [
+      "operation_4da211eef3484b1dc28a",
+      "operation_733574eef686a7794052",
+      "operation_861d3964b7e9b86f8f3b"
+    ]
+  },
+  "report_hash": "ef8ce04c7d59ce73ff0994baead4b1c25667d3b7af9a1a10013c92a5da200d90",
+  "report_path": "data/wiki/daily-reports/daily-report_20260907.md",
+  "resume_id": null,
+  "run_id": "research-2026-09-07-34096820505",
+  "schema_version": 1,
+  "seeded_operations": [
+    "operation_f300d9e9b19b3981b88e",
+    "operation_e1f17fef1ba5b9f664c6",
+    "operation_861d3964b7e9b86f8f3b",
+    "operation_4da211eef3484b1dc28a",
+    "operation_733574eef686a7794052"
+  ],
+  "send_telegram": true,
+  "slot": {
+    "late_release_end_at": "2026-09-07T06:00:00Z",
+    "local_date": "2026-09-07",
+    "publication_at": "2026-09-07T03:07:00Z",
+    "recovery_at": "2026-09-07T04:17:00Z",
+    "release_at": "2026-09-07T04:00:00Z",
+    "research_at": "2026-09-07T01:17:00Z",
+    "soft_cutoff_at": "2026-09-07T02:45:00Z",
+    "timezone": "Europe/Rome"
+  },
+  "trigger": "workflow_dispatch"
+}

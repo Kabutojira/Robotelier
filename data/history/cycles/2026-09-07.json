@@ -1,0 +1,18 @@
+{
+  "created_at": "2026-09-07T07:43:48Z",
+  "cycle_id": "2026-09-07",
+  "known_metered_usd": "0",
+  "maximum_known_metered_usd": "5.00",
+  "maximum_operations": 20,
+  "maximum_research": 5,
+  "maximum_weighted": "100.00",
+  "operations_claimed": 6,
+  "research_claimed": 0,
+  "schema_version": 1,
+  "unknown_cost_operations": [
+    "operation_f300d9e9b19b3981b88e",
+    "operation_e1f17fef1ba5b9f664c6"
+  ],
+  "updated_at": "2026-09-07T07:55:29Z",
+  "weighted_used": "18"
+}

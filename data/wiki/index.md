@@ -1,7 +1,7 @@
 # Robotelier
 
-Robotelier is an evidence-backed public knowledge base about robotics, with special editorial
-attention to humanoid robots and their enabling technologies and value chains.
+Evidence-backed robotics research and podcast transcripts.
 
-_This index is rebuilt by `robotelier wiki build`._
+## Daily Report
 
+- [Robotelier daily report — 2026-09-07](daily-reports/daily-report_20260907.md)
