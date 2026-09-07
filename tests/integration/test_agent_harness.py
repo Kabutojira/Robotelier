@@ -31,6 +31,9 @@ def test_isolated_home_disables_persistent_and_expansive_capabilities(repo: Path
     assert "enabled: false" in config
     assert "worktree: false" in config
     assert "mcp_servers: {}" in config
+    assert stat.S_IMODE(home.stat().st_mode) == 0o755
+    for name in ("config.yaml", "SOUL.md", ".env", "robotelier-managed.json"):
+        assert stat.S_IMODE((home / name).stat().st_mode) == 0o644
     check = preflight(repo, home, profile="x", live=False)
     assert check["provider"] == "openai-codex"
     assert check["model"] == "gpt-5.6-sol"
@@ -49,6 +52,7 @@ def test_auth_file_must_be_private_and_regular(repo: Path, tmp_path: Path) -> No
     with pytest.raises(AgentRunError, match="private"):
         preflight(repo, home, profile="scout")
     auth.chmod(stat.S_IRUSR | stat.S_IWUSR)
+    assert stat.S_IMODE(auth.stat().st_mode) == 0o600
     assert preflight(repo, home, profile="scout")["auth_status"] == "private_file_present"
 
 

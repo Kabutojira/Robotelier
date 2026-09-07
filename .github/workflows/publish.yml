@@ -51,6 +51,8 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Trust the mounted checkout for Git writes
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Install pinned project runner
         env:
           UV_TOOL_BIN_DIR: /tmp/robotelier-uv/bin

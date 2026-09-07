@@ -60,6 +60,7 @@ def configure_home(root: Path, home: Path, *, profile: str, replace_unmanaged: b
     else:
         raise AgentRunError("Hermes home must be outside the repository")
     home.mkdir(parents=True, exist_ok=True)
+    home.chmod(0o755)
     marker = home / "robotelier-managed.json"
     if any(home.iterdir()) and not marker.exists() and not replace_unmanaged:
         raise AgentRunError("refusing to replace an unmanaged Hermes home")
@@ -101,6 +102,12 @@ def configure_home(root: Path, home: Path, *, profile: str, replace_unmanaged: b
         },
         allowed_root=home,
     )
+    # GitHub Actions executes the pinned job container across a mounted runner
+    # boundary.  Hermes must be able to read its non-secret managed profile even
+    # when the writer's numeric UID is not preserved by that mount.  auth.json is
+    # written separately by the credential controller and remains mode 0600.
+    for managed_file in (home / "config.yaml", home / "SOUL.md", home / ".env", marker):
+        managed_file.chmod(0o644)
     return home / "config.yaml"
 
 
