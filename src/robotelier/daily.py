@@ -41,8 +41,9 @@ def _seed_daily_operations(root: Path, *, intended_local_date: str) -> list[str]
             "dedupe_key": f"{prefix}:x-research",
             "priority": 90,
             "prompt": (
-                "Run the bounded read-only X discovery queries using only the xai-oauth profile. "
-                "Record resolvable originating-post evidence or an explicit degraded/unsourced outcome."
+                "Run bounded read-only X-focused discovery with the controller-provisioned "
+                "openai-codex/gpt-5.6-sol profile. Record resolvable originating-post evidence "
+                "or an explicit degraded/unsourced outcome."
             ),
             "inputs": {
                 "intended_local_date": intended_local_date,

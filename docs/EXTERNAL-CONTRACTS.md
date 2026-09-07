@@ -3,16 +3,12 @@
 Verified on 2026-09-06. These references constrain adapters and workflows; they are not proof that
 the configured accounts passed live checks.
 
-- [Hermes xAI Grok OAuth](https://hermes-agent.nousresearch.com/docs/guides/xai-grok-oauth)
-  documents the `xai-oauth` device-code path and subscription-backed use. The current CLI route is
-  `hermes auth add xai-oauth`.
-- [Hermes X Search](https://hermes-agent.nousresearch.com/docs/user-guide/features/x-search)
-  documents the native `x_search` Responses tool, post citations, OAuth/API-key routes, and degraded
-  uncited output. Documentation has changed and contains conflicting credential-precedence claims;
-  Robotelier removes `XAI_API_KEY` and trusts only observed credential/citation fields.
+- [OpenAI GPT-5.6 Sol](https://developers.openai.com/api/docs/models/gpt-5.6-sol) documents the exact
+  selected model and its web-search support. Robotelier still treats search results as discovery
+  leads until the originating source is inspected.
 - [Hermes providers](https://hermes-agent.nousresearch.com/docs/integrations/providers) documents
-  `hermes auth add openai-codex`, automatic refresh behavior, subscription-cost uncertainty, and
-  possible xAI 403 entitlement failures after login.
+  `hermes auth add openai-codex` and automatic refresh behavior. The pinned container and configured
+  account remain the authoritative runtime acceptance surface.
 - [GitHub scheduled workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)
   documents IANA `timezone`, default-branch execution, possible delays/drops, and the public-repo
   inactivity condition. The schedule is a target, never an exact-time guarantee.
@@ -26,4 +22,4 @@ the configured accounts passed live checks.
 
 The starter registry was checked against official company/lab pages. The Boston Dynamics and
 Agility X handles were followed from their official sites; those X subscriptions remain inactive
-until a live Grok OAuth query returns resolvable originating-post evidence.
+until a live OpenAI Sol operation returns resolvable inspected originating-post evidence.

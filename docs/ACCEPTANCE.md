@@ -16,13 +16,14 @@ Telegram, or GitHub accepted a live operation.
 | A54, A56–A57 | Europe/Rome spring/fall UTC conversion, intended-date manifests, phase receipts, and the controlled 06:00–08:00 workflow window. |
 | A58–A59, A62 | Exact-base allowlisted Git bundle code, post-rebase integrity gates, deterministic wiki indexes, and an executed clean-input Quartz build. A remote concurrent-push rehearsal remains part of controlled activation. |
 
-The suite passed 76 tests. Tests use no provider credentials, source media, generated audio archive,
+The suite passed 80 tests. Tests use no provider credentials, source media, generated audio archive,
 paid API, or uncontrolled web call.
 
 ## Open controlled checks
 
-- A19 is blocked: no live Grok OAuth query has yet demonstrated resolvable originating-post
-  evidence with the configured account and pinned model.
+- A19 is open: the exact pinned container successfully exercised `openai-codex` /
+  `gpt-5.6-sol`, but no live operation has yet demonstrated inspected, resolvable originating-post
+  evidence from X.
 - The semantic reviewer has not run with the live deep profile; fixture expectations are not a
   substitute for model evaluation.
 - Edge TTS is installed locally, but a controlled full-duration live render and Telegram delivery
@@ -34,4 +35,4 @@ paid API, or uncontrolled web call.
   transitions are covered offline.
 
 None of these open cases is silently converted to success. They keep the final activation checkbox
-in `PLAN.md` incomplete and keep all production flags disabled.
+in `PLAN.md` incomplete while the user-authorized production run records real typed outcomes.

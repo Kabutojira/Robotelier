@@ -32,7 +32,8 @@ def test_isolated_home_disables_persistent_and_expansive_capabilities(repo: Path
     assert "worktree: false" in config
     assert "mcp_servers: {}" in config
     check = preflight(repo, home, profile="x", live=False)
-    assert check["provider"] == "xai-oauth"
+    assert check["provider"] == "openai-codex"
+    assert check["model"] == "gpt-5.6-sol"
     assert check["native_skill_sha256"]
     with pytest.raises(AgentRunError, match=r"auth\.json"):
         preflight(repo, home, profile="x", live=True)

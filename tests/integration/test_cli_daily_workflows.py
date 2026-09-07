@@ -136,6 +136,8 @@ def test_workflows_are_offline_for_prs_serialized_and_never_transfer_audio() -> 
     assert "report prepare-summary" in research_text
     assert "report deliver-summary" in research_text
     assert "report verify-summary" in research_text
+    assert "GROK_HOME" not in research_text
+    assert '--profile x --hermes-home "$OPENAI_HOME"' in research_text
     assert "--publish-pages" in research_text
     assert "--send-telegram" in research_text
     pages_text = (root / ".github/workflows/pages.yml").read_text()

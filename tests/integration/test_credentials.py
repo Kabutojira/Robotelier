@@ -79,9 +79,9 @@ def test_combined_envelope_is_verified_and_restored_with_provider_scope(
     x_home = tmp_path / "x-home"
     result = restore_envelope(repo, profile="x", home=x_home, identity=identity)
     restored = json.loads((x_home / "auth.json").read_text())
-    assert result["provider"] == "xai-oauth"
-    assert set(restored["providers"]) == {"xai-oauth"}
-    assert restored["credential_pool"] == {}
+    assert result["provider"] == "openai-codex"
+    assert set(restored["providers"]) == {"openai-codex"}
+    assert set(restored["credential_pool"]) == {"openai-codex"}
     assert (x_home / "auth.json").stat().st_mode & 0o077 == 0
 
     openai_home = tmp_path / "openai-home"
@@ -91,7 +91,7 @@ def test_combined_envelope_is_verified_and_restored_with_provider_scope(
     assert set(openai["credential_pool"]) == {"openai-codex"}
 
 
-def test_refresh_merge_preserves_the_other_provider_and_skips_unchanged_ciphertext(
+def test_refresh_merge_preserves_unused_provider_and_skips_unchanged_ciphertext(
     repo: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _fake_age(tmp_path, monkeypatch)
@@ -104,7 +104,7 @@ def test_refresh_merge_preserves_the_other_provider_and_skips_unchanged_cipherte
     assert (repo / OAUTH_CIPHERTEXT_PATH).read_bytes() == before
 
     scoped = json.loads((x_home / "auth.json").read_text())
-    scoped["providers"]["xai-oauth"]["tokens"]["refresh"] = "rotated-fixture"
+    scoped["providers"]["openai-codex"]["tokens"]["refresh"] = "rotated-fixture"
     (x_home / "auth.json").write_text(json.dumps(scoped))
     (x_home / "auth.json").chmod(0o600)
     assert seal_envelope(repo, profile="x", home=x_home, identity=identity)["status"] == "sealed"
@@ -112,11 +112,13 @@ def test_refresh_merge_preserves_the_other_provider_and_skips_unchanged_cipherte
     openai_home = tmp_path / "openai-home"
     restore_envelope(repo, profile="scout", home=openai_home, identity=identity)
     openai = json.loads((openai_home / "auth.json").read_text())
-    assert openai["providers"]["openai-codex"]["tokens"]["refresh"] == "openai-fixture"
+    assert openai["providers"]["openai-codex"]["tokens"]["refresh"] == "rotated-fixture"
+    combined = json.loads((repo / OAUTH_CIPHERTEXT_PATH).read_text())
+    assert combined["providers"]["xai-oauth"]["tokens"]["refresh"] == "grok-fixture"
     refreshed_x_home = tmp_path / "refreshed-x-home"
     restore_envelope(repo, profile="x", home=refreshed_x_home, identity=identity)
     refreshed_x = json.loads((refreshed_x_home / "auth.json").read_text())
-    assert refreshed_x["providers"]["xai-oauth"]["tokens"]["refresh"] == "rotated-fixture"
+    assert refreshed_x["providers"]["openai-codex"]["tokens"]["refresh"] == "rotated-fixture"
 
 
 def test_identity_and_plaintext_inside_public_repository_are_rejected(

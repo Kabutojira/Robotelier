@@ -1,9 +1,9 @@
 """Trusted, ciphertext-only Hermes OAuth handoff.
 
-The committed envelope contains the combined Hermes ``auth.json`` document. Restore
-filters that document to one provider before it enters an isolated agent home. Seal
-merges only that provider back into the combined document, then verifies the new age
-ciphertext by decrypting it before replacing the committed artifact.
+The committed envelope contains the Hermes ``auth.json`` document. Restore filters
+that document to the selected profile's provider before it enters an isolated agent
+home. Seal merges only that provider back into the combined document, then verifies
+the new age ciphertext by decrypting it before replacing the committed artifact.
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ from robotelier.storage import atomic_write_bytes
 from robotelier.utils import ContractError, content_hash
 
 OAUTH_CIPHERTEXT_PATH = Path(".robotelier/credentials/oauth-auth.json.age")
-REQUIRED_PROVIDERS = frozenset({"openai-codex", "xai-oauth"})
+REQUIRED_PROVIDERS = frozenset({"openai-codex"})
 MAXIMUM_AUTH_BYTES = 2_000_000
 
 

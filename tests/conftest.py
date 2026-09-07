@@ -22,6 +22,27 @@ def repo(tmp_path: Path) -> Path:
     shutil.copytree(PROJECT_ROOT / "schemas", root / "schemas")
     shutil.copytree(PROJECT_ROOT / "skills", root / "skills")
     shutil.copytree(PROJECT_ROOT / "data", root / "data")
+    runtime_roots = (
+        "cursors",
+        "history",
+        "issues",
+        "operations",
+        "published",
+        "records",
+        "runs",
+    )
+    for relative in runtime_roots:
+        for path in (root / "data" / relative).rglob("*"):
+            if path.is_file() and path.name != ".gitkeep":
+                path.unlink()
+    wiki = root / "data" / "wiki"
+    exempt_wiki = {"SCHEMA.md", "index.md", "log.md", "research-catalog.md", ".gitkeep"}
+    for path in wiki.rglob("*"):
+        if path.is_file() and path.name not in exempt_wiki:
+            path.unlink()
+    (wiki / "index.md").write_text("# Robotelier\n\nEvidence-backed robotics research and podcast transcripts.\n")
+    (wiki / "log.md").write_text("# Knowledge log\n\nNo accepted research revisions yet.\n")
+    (wiki / "research-catalog.md").write_text("# Research catalog\n\nNo maintained research pages yet.\n")
     for generated in (
         root / "data" / "published" / "reference-index.json",
         root / "data" / "wiki" / "_meta" / "catalog.json",

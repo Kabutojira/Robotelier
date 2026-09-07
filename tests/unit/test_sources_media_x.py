@@ -141,7 +141,7 @@ def test_repeated_transport_identity_is_idempotent(repo: Path) -> None:
 def test_uncited_x_answer_is_always_unsourced(degraded: bool | None) -> None:
     result = normalize_x_response(
         {
-            "credential_source": "xai-oauth",
+            "credential_source": "openai-codex",
             "success": True,
             "degraded": degraded,
             "tool_available": True,
@@ -155,9 +155,9 @@ def test_uncited_x_answer_is_always_unsourced(degraded: bool | None) -> None:
     assert result["answer_retained"] is False
 
 
-def test_x_evidence_requires_oauth_and_matching_originating_post() -> None:
+def test_x_evidence_requires_openai_codex_and_matching_originating_post() -> None:
     raw = {
-        "credential_source": "xai-oauth",
+        "credential_source": "openai-codex",
         "success": True,
         "degraded": False,
         "tool_available": True,
@@ -173,14 +173,14 @@ def test_x_evidence_requires_oauth_and_matching_originating_post() -> None:
     result = normalize_x_response(raw, query="from:OfficialBot", account_filter="OfficialBot")
     assert result["status"] == "evidence_available"
     assert result["posts"][0]["url"] == "https://x.com/OfficialBot/status/1234567890"
-    with pytest.raises(ContractError, match="xai-oauth"):
+    with pytest.raises(ContractError, match="openai-codex"):
         normalize_x_response({**raw, "credential_source": "api-key"}, query="robotics")
 
 
 def test_x_invalid_handle_date_profile_url_and_signed_media_are_not_invented() -> None:
     result = normalize_x_response(
         {
-            "credential_source": "xai-oauth",
+            "credential_source": "openai-codex",
             "tool_available": True,
             "answer": "lead",
             "citations": [

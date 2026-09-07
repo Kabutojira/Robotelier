@@ -297,8 +297,8 @@ def load_settings(root: Path, path: Path | None = None) -> Settings:
             _positive(parser, section, "timeout_seconds"),
             _decimal(parser, section, "cost_weight"),
         )
-    if profiles["x"].provider != "xai-oauth":
-        raise ConfigurationError("profile_x.provider must be xai-oauth")
+    if profiles["x"].provider != "openai-codex" or profiles["x"].model != "gpt-5.6-sol":
+        raise ConfigurationError("profile_x must use openai-codex/gpt-5.6-sol")
     return Settings(
         root,
         paths,

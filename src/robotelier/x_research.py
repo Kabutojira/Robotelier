@@ -1,4 +1,4 @@
-"""Normalized evidence contract for Hermes native X search over Grok OAuth."""
+"""Normalized evidence contract for OpenAI-backed read-only X research."""
 
 from __future__ import annotations
 
@@ -63,8 +63,8 @@ def normalize_x_response(
     date_to: str | None = None,
 ) -> dict[str, Any]:
     credential_source = raw.get("credential_source")
-    if credential_source != "xai-oauth":
-        raise ContractError("X research must prove credential_source=xai-oauth")
+    if credential_source != "openai-codex":
+        raise ContractError("X research must prove credential_source=openai-codex")
     citations = raw.get("citations", [])
     if not isinstance(citations, list):
         citations = []
@@ -138,7 +138,7 @@ def normalize_x_response(
         "status": status,
         "query": query,
         "filters": {"account": account_filter, "date_from": date_from, "date_to": date_to},
-        "credential_source": "xai-oauth",
+        "credential_source": "openai-codex",
         "provider": raw.get("provider"),
         "inference_model": raw.get("inference_model"),
         "search_model": raw.get("search_model"),

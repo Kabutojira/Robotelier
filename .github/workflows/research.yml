@@ -64,7 +64,6 @@ jobs:
         shell: bash
     env:
       OPENAI_HOME: /tmp/robotelier-openai-hermes
-      GROK_HOME: /tmp/robotelier-grok-hermes
     steps:
       - name: Check out without persisted credentials
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -123,13 +122,11 @@ jobs:
       - name: Require explicit production activation
         if: ${{ !inputs.dry_run && github.event_name != 'workflow_dispatch' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run) }}
         run: test "${{ vars.ROBOTELIER_PRODUCTION_ENABLED }}" = "true"
-      - name: Configure isolated Hermes profiles
+      - name: Configure isolated Hermes profile
         if: ${{ !inputs.dry_run && vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' }}
         run: |
           uv run robotelier agent configure --profile scout --hermes-home "$OPENAI_HOME" --replace-unmanaged
-          uv run robotelier agent configure --profile x --hermes-home "$GROK_HOME" --replace-unmanaged
           HERMES_HOME="$OPENAI_HOME" hermes skills opt-in --sync
-          HERMES_HOME="$GROK_HOME" hermes skills opt-in --sync
       - name: Install checksum-verified age 1.3.1
         if: ${{ !inputs.dry_run && vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' }}
         run: |
@@ -151,7 +148,6 @@ jobs:
           printf '%s\n' "$OPENAI_OAUTH_SECRET" > /tmp/robotelier-age-identity
           unset OPENAI_OAUTH_SECRET
           uv run robotelier credential restore --profile scout --hermes-home "$OPENAI_HOME" --identity-file /tmp/robotelier-age-identity
-          uv run robotelier credential restore --profile x --hermes-home "$GROK_HOME" --identity-file /tmp/robotelier-age-identity
           rm -f /tmp/robotelier-age-identity
       - name: Run strictly sequential profiles
         if: ${{ !inputs.dry_run && vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' }}
@@ -167,9 +163,11 @@ jobs:
           if [ "$SEND_TELEGRAM" = "true" ]; then channel_args+=(--send-telegram); fi
           uv run robotelier daily prepare --run-id "$RUN_ID" --intended-slot "$LOCAL_DATE" --trigger "${{ github.event_name }}" --maximum-operations "$INPUT_MAX" "${channel_args[@]}"
           uv run robotelier agent preflight --profile scout --hermes-home "$OPENAI_HOME" --live
-          uv run robotelier agent preflight --profile x --hermes-home "$GROK_HOME" --live
           uv run robotelier agent run --profile scout --hermes-home "$OPENAI_HOME" --run-id "$RUN_ID" --cycle-id "$LOCAL_DATE" --maximum-operations "$INPUT_MAX"
-          uv run robotelier agent run --profile x --hermes-home "$GROK_HOME" --run-id "$RUN_ID" --cycle-id "$LOCAL_DATE" --maximum-operations "$INPUT_MAX"
+          uv run robotelier agent configure --profile x --hermes-home "$OPENAI_HOME"
+          HERMES_HOME="$OPENAI_HOME" hermes skills opt-in --sync
+          uv run robotelier agent preflight --profile x --hermes-home "$OPENAI_HOME" --live
+          uv run robotelier agent run --profile x --hermes-home "$OPENAI_HOME" --run-id "$RUN_ID" --cycle-id "$LOCAL_DATE" --maximum-operations "$INPUT_MAX"
           uv run robotelier agent configure --profile editorial --hermes-home "$OPENAI_HOME"
           HERMES_HOME="$OPENAI_HOME" hermes skills opt-in --sync
           uv run robotelier agent preflight --profile editorial --hermes-home "$OPENAI_HOME" --live
@@ -188,13 +186,10 @@ jobs:
           if test -f "$OPENAI_HOME/auth.json"; then
             uv run robotelier credential seal --profile editorial --hermes-home "$OPENAI_HOME" --identity-file /tmp/robotelier-age-identity
           fi
-          if test -f "$GROK_HOME/auth.json"; then
-            uv run robotelier credential seal --profile x --hermes-home "$GROK_HOME" --identity-file /tmp/robotelier-age-identity
-          fi
           rm -f /tmp/robotelier-age-identity
       - name: Remove plaintext OAuth from temporary homes
         if: ${{ always() }}
-        run: rm -f "$OPENAI_HOME/auth.json" "$GROK_HOME/auth.json" /tmp/robotelier-age-identity
+        run: rm -f "$OPENAI_HOME/auth.json" /tmp/robotelier-age-identity
       - name: Commit validated public state
         id: research_commit
         if: ${{ !inputs.dry_run && vars.ROBOTELIER_PRODUCTION_ENABLED == 'true' && always() }}

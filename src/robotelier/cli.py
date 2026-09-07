@@ -328,7 +328,7 @@ def _doctor(root: Path, live: bool) -> dict[str, Any]:
     if live:
         for profile, variable in (
             ("editorial", "ROBOTELIER_OPENAI_HERMES_HOME"),
-            ("x", "ROBOTELIER_GROK_HERMES_HOME"),
+            ("x", "ROBOTELIER_X_HERMES_HOME"),
         ):
             raw = os.environ.get(variable)
             if not raw:

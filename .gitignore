@@ -10,6 +10,7 @@ __pycache__/
 **/auth.json
 .robotelier/credentials/*
 !.robotelier/credentials/oauth-auth.json.age
+data/.controller.lock
 data/runs/*/*/workspace/
 site/node_modules/
 site/quartz/

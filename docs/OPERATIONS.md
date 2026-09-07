@@ -43,25 +43,25 @@ uv run robotelier claim trace --claim-id <claim-id>
 ## Isolated Hermes profiles
 
 Provision dedicated Robotelier homes; never point either variable at a personal or PaperTrader
-home. The X home must authenticate through `xai-oauth` and must not inherit `XAI_API_KEY`.
+home. Both profiles use capability-scoped `openai-codex` OAuth. The scheduled research workflow
+reconfigures one home sequentially so two copies cannot race a rotating refresh token.
 
 ```bash
 uv run robotelier agent configure --profile scout --hermes-home /safe/robotelier-openai
-uv run robotelier agent configure --profile x --hermes-home /safe/robotelier-grok
+uv run robotelier agent configure --profile x --hermes-home /safe/robotelier-x
 HERMES_HOME=/safe/robotelier-openai hermes skills opt-in --sync
-HERMES_HOME=/safe/robotelier-grok hermes skills opt-in --sync
+HERMES_HOME=/safe/robotelier-x hermes skills opt-in --sync
 HERMES_HOME=/safe/robotelier-openai hermes auth add openai-codex
-HERMES_HOME=/safe/robotelier-grok env -u XAI_API_KEY hermes auth add xai-oauth
 uv run robotelier agent preflight --profile scout --hermes-home /safe/robotelier-openai --live
-uv run robotelier agent preflight --profile x --hermes-home /safe/robotelier-grok --live
+uv run robotelier agent preflight --profile x --hermes-home /safe/robotelier-x --live
 uv run robotelier doctor --live
 ```
 
-The two `hermes auth add` commands are the current documented device-code routes. Run them only in
-the dedicated homes and verify them against the installed pinned Hermes CLI before entering a code.
-Scheduled jobs never prompt. Do not configure `XAI_API_KEY`; if one exists in the host environment,
-the `env -u` invocation and controller allowlist exclude it. After login, run a bounded known-post
-and current-topic X operation. Authentication alone does not pass the X evidence check.
+Run the `hermes auth add` command only in a dedicated home and verify it against the installed
+pinned Hermes CLI before entering a code. Scheduled jobs never prompt. Do not configure
+`XAI_API_KEY`; the controller allowlist excludes it if it exists in the host environment. After
+login, run a bounded known-post and current-topic X operation. Authentication and successful Sol
+inference alone do not pass the X evidence check.
 
 Hermes stores all provider OAuth state in one `auth.json`. After the one-time login, keep that
 plaintext outside the checkout (for example `/tmp/auth.json`) and encrypt it with the same
@@ -81,12 +81,12 @@ derives its public recipient with `age-keygen -y`; no separate recipient setting
 Only `.robotelier/credentials/oauth-auth.json.age` is allowlisted in the credentials directory.
 Never add `/tmp/auth.json`, a decrypted copy, `.env`, the age identity, or a refresh snapshot.
 
-Trusted jobs briefly decrypt the combined document, copy only `openai-codex` or `xai-oauth` into
-the relevant isolated home, and delete the age identity before launching Hermes. After execution,
-the controller recreates the identity, merges only that provider's refresh state, encrypts it, and
-decrypts the proposed ciphertext for a byte-for-byte check before replacement. Unchanged auth does
-not rewrite the ciphertext. Plaintext home auth and temporary identities are removed on every job
-exit. `X_API_KEY` is ignored even if present locally; paid X API fallback remains forbidden.
+Trusted jobs briefly decrypt the document, copy only `openai-codex` into the isolated home, and
+delete the age identity before launching Hermes. After execution, the controller recreates the
+identity, merges only that provider's refresh state, encrypts it, and decrypts the proposed
+ciphertext for a byte-for-byte check before replacement. Unchanged auth does not rewrite the
+ciphertext. Plaintext home auth and temporary identities are removed on every job exit. `X_API_KEY`
+is ignored even if present locally; paid X API fallback remains forbidden.
 
 Local Telegram commands use the existing `.env` names `TELEGRAM_BOT_TOKEN` and
 `TELEGRAM_CHAT_ID`. `WIKI_PATH` may be supplied but must resolve to this checkout's `data/wiki`.
@@ -144,8 +144,8 @@ scheduler runs only from the default branch and may be delayed or skipped. Publi
 scheduled workflows can be disabled after inactivity. Recovery is an in-repository status pass, not
 an independent monitor.
 
-Leave `ROBOTELIER_PRODUCTION_ENABLED` unset until the live model items in
-`docs/IMPLEMENTATION.md` have actual receipts. `ROBOTELIER_PAGES_ENABLED=true` publishes the Quartz
+Set `ROBOTELIER_PRODUCTION_ENABLED=true` only with a reviewed activation commit and configured
+Actions secrets. `ROBOTELIER_PAGES_ENABLED=true` publishes the Quartz
 wiki after successful research/publication workflows. Set `ROBOTELIER_SEND_TELEGRAM=true` only for
 the identified destination. Manual research dispatch defaults to dry-run and exposes both channel
 flags explicitly.

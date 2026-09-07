@@ -6,8 +6,8 @@ This file records executed implementation evidence. A documented contract is not
 
 - Workspace baseline: only `AGENTS.md` and `PLAN.md`; no prior code or credentials.
 - PaperTrader object `99540f74e1712f500bae0da309772c36b5bb4454` was present and inspected.
-- Hermes executable: not observed on the local `PATH`; the scheduled runtime is pinned by image
-  digest but has not been live-probed.
+- Hermes executable: not observed on the local `PATH`; the exact scheduled runtime image was
+  live-probed on 2026-09-07 with `openai-codex` / `gpt-5.6-sol` and returned `OK`.
 - Locked Python environment: `uv sync --locked --all-groups` passed with uv 0.12.2 and Python
   3.14.4.
 - Python verification: Ruff passed; strict mypy passed for `src`; pytest passed all 80
@@ -22,9 +22,13 @@ This file records executed implementation evidence. A documented contract is not
 - Media audit: no retained source/generated media exists outside ignored disposable dependency and
   build trees.
 - OAuth artifact verification: system age 1.2.1 encrypted the external `/tmp/auth.json`; immediate
-  decryption matched byte-for-byte. Separate real decrypts exposed only `openai-codex` to the scout
-  home and only `xai-oauth` to the X home, both mode 0600; unchanged reseals preserved the exact
-  ciphertext. Scheduled jobs install checksum-pinned age 1.3.1, matching PaperTrader's baseline.
+  decryption matched byte-for-byte. Real decrypts exposed only `openai-codex` to isolated homes with
+  mode 0600; unchanged reseals preserved the exact ciphertext. Scheduled jobs install
+  checksum-pinned age 1.3.1, matching PaperTrader's baseline.
+- Activation update (2026-09-07): the user replaced the blocked Grok route with the validated
+  `openai-codex` / `gpt-5.6-sol` profile and explicitly authorized provisioning the age identity and
+  Telegram values as GitHub Actions secrets. GitHub confirmed all three secret names without
+  exposing their values.
 
 The implementation and its encrypted OAuth artifact are prepared for the initial reviewed commit.
 The source plaintext and age identity remain outside Git; the repository credentials directory
@@ -35,8 +39,8 @@ allowlists only the verified age ciphertext.
 - M0–M2: package/configuration, attributable upstream inventory, schemas, atomic storage,
   deterministic queue/budgets/fencing, isolated Hermes homes, encrypted credential envelopes,
   audited harness, and scoped skills.
-- M3: normalized OAuth-only X evidence/degradation contract and adversarial fixtures. The required
-  live evidence probe remains blocked.
+- M3: normalized OpenAI-backed X evidence/degradation contract and adversarial fixtures. The model
+  inference probe passed; inspected originating-post evidence remains a separate live check.
 - M4–M6: bounded source adapters/cursors, immediate metadata-only media registration, source
   registry, native-compatible wiki projections, editorial review/ranking, and Europe/Rome cadence.
 - M7–M9: committed frozen bundles, separate writer/reviewer operations, segment provenance,
@@ -47,11 +51,11 @@ allowlists only the verified age ciphertext.
 
 ## Live blockers
 
-The live Grok OAuth evidence probe reached xAI from the exact pinned Hermes container through the
-capability-scoped encrypted credential, but the advertised `grok-build-0.1` model returned the typed
-provider blocker `personal-team-blocked:spending-limit`. No paid fallback was enabled and
-`profile_x.model` deliberately remains `UNCONFIGURED_PIN_REQUIRED`. Actual OpenAI model profiles,
-native LLMWiki invocation, Edge TTS service rendering, controlled Telegram delivery, and GitHub
-Pages deployment still require their explicit live receipts; model production remains disabled.
+The earlier Grok OAuth route was superseded by the user's 2026-09-07 provider decision after xAI
+returned `personal-team-blocked:spending-limit`. No paid fallback was enabled. The replacement
+`openai-codex` / `gpt-5.6-sol` inference probe passed in the exact pinned container. Inspected X
+originating-post evidence, native LLMWiki invocation, Edge TTS service rendering, controlled
+Telegram delivery, and GitHub Pages deployment still require their explicit live receipts.
+Production is enabled for the requested controlled workflow run; failures remain typed and visible.
 
 See `docs/ACCEPTANCE.md` for the offline acceptance coverage and deliberately open live cases.

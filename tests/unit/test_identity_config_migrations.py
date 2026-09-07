@@ -21,7 +21,8 @@ def test_checked_in_configuration_has_authoritative_limits(repo: Path) -> None:
     assert settings.podcast.minimum_seconds == 600
     assert settings.podcast.maximum_seconds == 1200
     assert settings.cadence.timezone == "Europe/Rome"
-    assert settings.profiles["x"].provider == "xai-oauth"
+    assert settings.profiles["x"].provider == "openai-codex"
+    assert settings.profiles["x"].model == "gpt-5.6-sol"
 
 
 def test_invalid_duration_configuration_is_rejected(repo: Path) -> None:

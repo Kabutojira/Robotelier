@@ -6,7 +6,7 @@ Authority: [AGENTS.md](AGENTS.md). Read it in full before executing this plan.
 
 ## 1. Outcome and fixed requirements
 
-Build a public, autonomous robotics research system with a humanoid focus. Reuse PaperTrader's native Hermes LLMWiki, bounded ephemeral agents, Git-native state, provider profiles, script/TTS validation, and Telegram delivery pattern. Research daily from X through Grok OAuth and from other primary and credible sources. Register sources and media metadata, maintain durable knowledge, generate and rank podcast ideas, independently review priorities, select the highest-ranked eligible idea, and produce a source-traceable English episode.
+Build a public, autonomous robotics research system with a humanoid focus. Reuse PaperTrader's native Hermes LLMWiki, bounded ephemeral agents, Git-native state, provider profiles, script/TTS validation, and Telegram delivery pattern. Research daily from X through bounded OpenAI Sol web research and from other primary and credible sources. Register sources and media metadata, maintain durable knowledge, generate and rank podcast ideas, independently review priorities, select the highest-ranked eligible idea, and produce a source-traceable English episode.
 
 The show has one narrator and a measured duration of ten to twenty minutes. Publish at most one new episode per Europe/Rome date and work proactively toward at least one per rolling seven-local-day interval. There must be enough evidence-backed content; do not pad, fabricate, or recycle narration to satisfy cadence. Aim for 06:00 Europe/Rome listener release. Save transcripts, show notes, evidence, and metadata; send temporary audio through Telegram and delete it. Do not retain any source image/video/audio, generated audio, or derived media frames, and do not build an audio archive, RSS feed, or video renderer.
 
@@ -39,7 +39,7 @@ All CLI examples below are planned interfaces until implemented. Do not report a
 | M0 | Minimal repository, pinned upstream inventory, configuration | None |
 | M1 | Provenance-first schemas, identities, transactions, validation | M0 |
 | M2 | Sequential queue, ephemeral Hermes, scoped auth and audited harness | M0–M1 |
-| M3 | Working Grok OAuth X adapter with explicit evidence/degradation behavior | M1–M2 |
+| M3 | Working OpenAI Sol X-research path with explicit evidence/degradation behavior | M1–M2 |
 | M4 | Multi-source discovery, media metadata registry, triage | M1–M3 |
 | M5 | Robotics LLMWiki and evidence-backed knowledge maintenance | M1–M4 |
 | M6 | Editorial queue, independent ranking review, cadence controller | M1–M2, M5 |
@@ -48,7 +48,7 @@ All CLI examples below are planned interfaces until implemented. Do not report a
 | M9 | 06:00 workflows, public wiki, safe Git boundaries, recovery | M4–M8 |
 | M10 | Adversarial/end-to-end acceptance, controlled activation | M0–M9 |
 
-M3 is an early risk-reduction milestone. Failure to obtain evidence-bearing X responses must not be hidden behind a complete UI or a plausible podcast. Other implementation can continue using offline fixtures and non-X adapters, but live X acceptance stays blocked until the intended integration is demonstrated.
+M3 is an early risk-reduction milestone. Failure to obtain evidence-bearing X responses must not be hidden behind a complete UI or a plausible podcast. Other implementation can continue using offline fixtures and non-X adapters, but live X acceptance stays blocked until the intended OpenAI Sol integration is demonstrated.
 
 ## 4. M0 — Bootstrap a minimal, attributable project
 
@@ -94,7 +94,7 @@ Create synthetic, clearly labeled fixtures for two robot versions, a maker annou
 
 - [ ] Implement operation enqueue/dedupe, dependency validation, leased claims, fencing tokens, heartbeats, priorities, deadlines, retries, blocked reasons, cancellation, and immutable attempt history.
 - [ ] Enforce a single live agent lease and a shared cycle budget across scheduled research, editorial, publication, and local runs.
-- [ ] Build isolated OpenAI and Grok Hermes homes with the pinned native `llm-wiki` skill and repository `skills.external_dirs`.
+- [ ] Build one isolated Hermes home for the strictly sequential OpenAI profiles with the pinned native `llm-wiki` skill and repository `skills.external_dirs`.
 - [ ] Configure the pinned `hermes chat --quiet --yolo` invocation with narrowly allowed toolsets. Disable delegation, memory, messaging, hooks, self-modification, worktrees, automatic skill installation, unneeded MCP, and media generation.
 - [ ] Add controller and per-operation skill contracts, allowed commands, allowed paths, frozen input manifests, and operation-specific model routing.
 - [ ] Adapt the before/after content-addressed baseline and audited CLI receipt system. Accept or roll back each complete operation from observed effects, not model claims.
@@ -102,29 +102,29 @@ Create synthetic, clearly labeled fixtures for two robot versions, a maker annou
 - [ ] Add provider-auth provisioning documentation, isolated encrypted envelopes, refresh persistence, ciphertext-only recovery, and cross-repository refresh-token safety.
 - [ ] Implement offline preflight, explicit live provider checks, typed failures, bounded retries, and sanitized logs.
 
-Auth setup reuses the PaperTrader account/provider approach, not its secret bytes or unreviewed refresh-token file. Grok OAuth exists according to the user; bootstrap must attach usable auth state to the isolated profile. Never ask for plaintext tokens in source files or conversational output. If a one-time login is required on the operator machine, give exact verified commands in `docs/OPERATIONS.md`; scheduled runs cannot complete interactive device-code approval.
+Auth setup reuses the PaperTrader account/provider approach, not its secret bytes or unreviewed refresh-token file. Bootstrap must attach usable `openai-codex` auth state to the isolated profile. Never ask for plaintext tokens in source files or conversational output. If a one-time login is required on the operator machine, give exact verified commands in `docs/OPERATIONS.md`; scheduled runs cannot complete interactive device-code approval.
 
 Treat model OAuth as the narrowly necessary agent capability; it is not accurate to say agents receive no credentials at all. GitHub write, Telegram, decryption keys, and deployment credentials stay in trusted stages. Validate this isolation with a canary test that tries to read unrelated environment variables, host paths, and retained auth values through source instructions.
 
 **Exit evidence:** a synthetic operation succeeds once; duplicate enqueue does not duplicate work; an expired agent is fenced; a forbidden file edit is rejected; model-declared fake receipts are ignored/rejected; a failed research attempt can still preserve a legitimately rotated encrypted token without accepting research mutations. Two concurrent invocations never launch two agents.
 
-## 7. M3 — Prove Grok OAuth X research works with evidence
+## 7. M3 — Prove OpenAI Sol X research works with evidence
 
-- [ ] Read the pinned Hermes native X-search code and current official provider contract; do not rely solely on prose documentation where it conflicts.
-- [ ] Configure the Grok X-research profile with `xai-oauth`, a tested pinned inference model, and a tested X-search model/tool configuration.
-- [ ] Explicitly exclude `XAI_API_KEY` from this profile, including inherited host environment. A key must not silently override OAuth.
-- [ ] Implement a normalized X response contract with citations, inline citations, stable post IDs, account identity, publication dates where verified, query/filter metadata, credential source, access level, degradation reason, and safely obtainable media metadata.
-- [ ] Independently classify an uncited answer as an unsourced lead even if the provider reports success or omits its degraded flag.
+- [ ] Read the pinned Hermes OpenAI Codex provider code and current official GPT-5.6 Sol contract; do not infer capabilities from a model name alone.
+- [ ] Configure the X-research profile with `openai-codex` and the tested, pinned `gpt-5.6-sol` model.
+- [ ] Explicitly exclude `XAI_API_KEY`, xAI OAuth, and X write tooling from this profile, including inherited host environment.
+- [ ] Implement a normalized X response contract with citations, stable post IDs, account identity, publication dates where verified, query/filter metadata, credential source, access level, degradation reason, and safely obtainable media metadata.
+- [ ] Independently classify search answers, snippets, titles, and model synthesis as unsourced leads unless the originating post or an honestly attributed secondary source was actually inspected.
 - [ ] Validate canonical post URLs and original-source relationships; do not accept a profile URL as proof of an asserted post.
 - [ ] Add tests for unknown media URLs and non-exhaustive search windows. Search output is not an exhaustive account timeline.
 - [ ] Run an explicitly bounded live probe with the configured account, checking at least a known publicly inspectable post and a current topic query. Verify evidence against the referenced post/primary page where accessible.
 - [ ] Record sanitized capability results and the exact Hermes/provider/model versions. No source media, raw auth, or full provider conversation may be committed.
 
-The live probe must separate login success, model inference, search-tool availability, actual post citations, useful metadata, and successful token refresh. A positive result in one does not imply all others. Current official Hermes material documents both OAuth support and possible uncited X-search degradation; Robotelier must handle the actual account/version result.
+The live probe must separate OAuth availability, model inference, web-tool availability, actual post inspection, useful metadata, and successful token refresh. A positive result in one does not imply all others. X pages may remain unavailable or access-restricted even when Sol and general web search work.
 
-When live X evidence is unavailable, record `x_search_unsourced`, `x_search_unavailable`, or an equivalent typed failure, continue supported non-X research, and keep M3 incomplete. Do not invent results, install a scraper that bypasses access restrictions, or enable a paid API as an unapproved workaround. Other milestones can use clearly labeled recorded/synthetic fixtures without pretending the live test passed.
+When live X evidence is unavailable, record `x_search_unsourced`, `x_search_unavailable`, or an equivalent typed failure, continue supported non-X research, and keep M3 incomplete. Do not invent results, install a scraper that bypasses access restrictions, or enable a paid X API as an unapproved workaround. Other milestones can use clearly labeled recorded/synthetic fixtures without pretending the live test passed.
 
-**Exit evidence:** an actual OAuth-routed query produces resolvable post evidence or M3 remains visibly blocked. Failure-mode fixtures for empty citations, invalid dates/handles, expired auth, 403, throttling, signed media URLs, and unknown fields pass. There are no X write capabilities.
+**Exit evidence:** an actual OpenAI Sol operation produces resolvable inspected post evidence or M3 remains visibly blocked. Failure-mode fixtures for empty citations, invalid dates/handles, expired auth, 403, throttling, signed media URLs, and unknown fields pass. There are no X write capabilities.
 
 ## 8. M4 — Add multi-source discovery and metadata capture
 
@@ -263,11 +263,11 @@ All cases below are required unless a case explicitly states an external prerequ
 | A12 | Demo autonomy, speed, or human intervention is unknown | Unknown fields remain explicit; no assertion of full autonomy or production readiness. |
 | A13 | Foreign-language official announcement | English synthesis preserves names, original title/language, source links, units, and appropriate attribution. |
 | A14 | A podcast or wiki summary is offered as fresh corroboration | Follow its external provenance or reject it as independent evidence; no self-citation loop. |
-| A15 | Grok OAuth login succeeds but search returns uncited prose | Record an unsourced/degraded lead; no verified X news or invented post URL. |
-| A16 | X response says `degraded=false` but has no citations | Robotelier still classifies it as unsourced. |
-| A17 | Paid xAI key exists in the host environment | Isolated X profile excludes it; only the authorized OAuth route is used. |
-| A18 | Grok OAuth expires or refresh is revoked | Bounded typed failure; no infinite retry, paid fallback, or interactive prompt in a scheduled run. |
-| A19 | Live X evidence probe through the configured account | Genuine post evidence and credential source are verified, or M3 stays blocked. |
+| A15 | OpenAI Sol returns uncited X-related prose | Record an unsourced/degraded lead; no verified X news or invented post URL. |
+| A16 | A search response reports success but has no inspected originating post | Robotelier still classifies it as unsourced. |
+| A17 | Paid xAI key exists in the host environment | Isolated X profile excludes it and uses only the authorized OpenAI Codex route. |
+| A18 | OpenAI OAuth expires or refresh is revoked | Bounded typed failure; no infinite retry, paid fallback, or interactive prompt in a scheduled run. |
+| A19 | Live X evidence probe through the configured OpenAI Sol account | Genuine post evidence and credential source are verified, or M3 stays blocked. |
 | A20 | One adapter fails while others succeed | Successful research persists; failed coverage is visible and never reported as “no news.” |
 | A21 | Crash occurs after item registration but before cursor update | Retry deduplicates safely; no source is lost and no false complete window is recorded. |
 | A22 | Non-exhaustive search response has a time filter | Store query coverage only; do not claim exhaustive account-stream ingestion. |
@@ -320,7 +320,7 @@ All cases below are required unless a case explicitly states an external prerequ
 
 **Semantic evaluation fixtures:** deliberately misleading demo claims, unsupported inferences, copied announcements, dense versus padded outlines, old versus genuinely new stories, English outputs from non-English sources, and source-correction propagation. Keep expected failure explanations; do not certify semantic quality using only the writer's self-evaluation. Model reviews are additional evidence, not substitutes for deterministic unit tests.
 
-**Live controlled tests:** the actual configured OpenAI profiles, Grok OAuth post-evidence extraction, native wiki skill, selected TTS voice, Telegram target, and Pages deployment. Bound usage, preserve sanitized metadata, and remove all temporary media. A test message must identify itself as a test, not a real published episode.
+**Live controlled tests:** the actual configured OpenAI profiles, OpenAI Sol post-evidence extraction, native wiki skill, selected TTS voice, Telegram target, and Pages deployment. Bound usage, preserve sanitized metadata, and remove all temporary media. A test message must identify itself as a test, not a real published episode.
 
 ## 15. End-to-end rehearsals
 
@@ -347,7 +347,7 @@ Run simulated spring-forward and fall-back periods, a skipped research trigger, 
 ## 16. Activation checklist and operational handoff
 
 - [ ] All applicable offline tests and rehearsals pass at an identified commit.
-- [ ] Live model, Grok OAuth evidence, TTS, Telegram, and Pages checks have actual recorded outcomes; unresolved failures are not marked complete.
+- [ ] Live OpenAI model and X-evidence, TTS, Telegram, and Pages checks have actual recorded outcomes; unresolved failures are not marked complete.
 - [ ] Source registry contains verified public identities spanning humanoid and broader robotics coverage.
 - [ ] Isolated auth state is configured without importing PaperTrader secret files or sharing an unsafe rotating refresh-token path.
 - [ ] Telegram destination is configured out of public data; the control test arrived at the intended chat/channel.
@@ -368,7 +368,7 @@ The handoff report names completed milestones, actual test commands and outcomes
 Robotelier is complete for this release when it can execute the following chain autonomously under its bounded policies:
 
 ```text
-Daily source discovery, including validated Grok OAuth X research
+Daily source discovery, including validated OpenAI Sol X research
   → source and media metadata registration
   → deduplicated, evidence-backed robotics research
   → linked English LLMWiki updates and historical claim records
@@ -398,7 +398,7 @@ Specific adoption checks that must remain in the plan:
 
 - PaperTrader's dormant external-source watching is not Robotelier's discovery implementation.
 - PaperTrader's translation path and investment-specific script constraints are excluded.
-- Grok OAuth login and evidence-bearing X search are separate acceptance tests.
+- OpenAI Sol inference and evidence-bearing X research are separate acceptance tests.
 - GitHub supports IANA-aware schedules, but hosted runs may still be delayed or missed.
 - Native `llm-wiki` is retained; no redundant maintenance framework is introduced.
 - Media retention is metadata-only, including generated audio after Telegram delivery.

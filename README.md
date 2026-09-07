@@ -44,7 +44,7 @@ External contracts and revalidation notes are in
 
 ## Current activation state
 
-Production is disabled in `config.ini`. Offline implementation and tests do not imply that Grok
-OAuth X evidence, OpenAI profiles, Edge TTS service access, Telegram delivery, or Pages deployment
-have passed live checks. See [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md) for executed evidence
-and blockers.
+Production activation was authorized on 2026-09-07 with X-focused research routed through
+`openai-codex` / `gpt-5.6-sol`. A live inference probe passed in the exact pinned Hermes container;
+originating-post evidence, Edge TTS, Telegram delivery, and Pages still require their own observed
+receipts. See [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md) for executed evidence and blockers.
