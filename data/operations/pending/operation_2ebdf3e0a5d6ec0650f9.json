@@ -1,0 +1,105 @@
+{
+  "allowed_commands": [
+    "source register",
+    "source observe",
+    "media register",
+    "queue enqueue"
+  ],
+  "allowed_paths": [
+    "data/records/sources/",
+    "data/records/media/",
+    "data/cursors/",
+    "data/history/",
+    "data/runs/"
+  ],
+  "attempts": [
+    {
+      "attempt_id": "attempt_c9876ca86b190a3cb0d7",
+      "completed_at": "2026-09-08T06:01:40Z",
+      "cost_status": "unknown",
+      "known_metered_usd": null,
+      "lease_token_hash": "8cd9c08b513564741876a182fb3f888c8352efb63a080323c6a2386dd624fdc3",
+      "outcome": "failed",
+      "reason_code": "agent_run_invalid",
+      "result": {
+        "errors": [
+          "agent result is missing or invalid"
+        ]
+      },
+      "run_id": "research-2026-09-08-34192710168",
+      "started_at": "2026-09-08T05:59:31Z",
+      "supplied_usage": {}
+    },
+    {
+      "attempt_id": "attempt_135d867d60b71c98693f",
+      "completed_at": "2026-09-08T06:02:42Z",
+      "cost_status": "unknown",
+      "known_metered_usd": null,
+      "lease_token_hash": "be7b976c7a49cd460b442faf222a847bbdc41f67a1a3f67676deb05591181d93",
+      "outcome": "failed",
+      "reason_code": "agent_run_invalid",
+      "result": {
+        "errors": [
+          "agent result is missing or invalid"
+        ]
+      },
+      "run_id": "research-2026-09-08-34192710168",
+      "started_at": "2026-09-08T06:01:40Z",
+      "supplied_usage": {}
+    },
+    {
+      "attempt_id": "attempt_88f48f4be82d32a09349",
+      "completed_at": "2026-09-08T06:04:35Z",
+      "cost_status": "unknown",
+      "known_metered_usd": null,
+      "lease_token_hash": "04b39ee8d56424a12119ae31cff11aff5a164c1ea9e9a97c05f969919beaf6d6",
+      "outcome": "failed",
+      "reason_code": "agent_run_invalid",
+      "result": {
+        "errors": [
+          "agent result is missing or invalid"
+        ]
+      },
+      "run_id": "research-2026-09-08-34192710168",
+      "started_at": "2026-09-08T06:02:42Z",
+      "supplied_usage": {}
+    }
+  ],
+  "created_at": "2026-09-08T05:59:31Z",
+  "deadline": null,
+  "dedupe_key": "daily:2026-09-08:discovery",
+  "depends_on": [],
+  "earliest_start": null,
+  "lease": null,
+  "max_attempts": 3,
+  "operation_id": "operation_2ebdf3e0a5d6ec0650f9",
+  "operation_type": "discovery",
+  "payload": {
+    "development_ids": [],
+    "entity_ids": [],
+    "idea_ids": [],
+    "inputs": {
+      "intended_local_date": "2026-09-08",
+      "queries_path": "data/subscriptions/queries.json",
+      "registry_path": "data/subscriptions/registry.json"
+    },
+    "prompt": "Run bounded non-X discovery from the active versioned registry and query definitions. Register source and media metadata before classification; report each adapter's coverage."
+  },
+  "payload_hash": "df841d4bd204a38c1e1b59479138ace7229fdb5a124f1c42e8545f48e136717c",
+  "priority": 90,
+  "resource_budget": {
+    "cost_weight": "1",
+    "known_metered_usd_ceiling": null,
+    "profile": "scout"
+  },
+  "result": {
+    "errors": [
+      "agent result is missing or invalid"
+    ],
+    "reason_code": "agent_run_invalid"
+  },
+  "schema_version": 1,
+  "source_refs": [],
+  "state": "failed",
+  "updated_at": "2026-09-08T06:04:35Z"
+}

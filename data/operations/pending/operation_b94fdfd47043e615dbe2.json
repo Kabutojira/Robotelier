@@ -1,0 +1,44 @@
+{
+  "allowed_commands": [
+    "editorial propose"
+  ],
+  "allowed_paths": [
+    "data/records/ideas/",
+    "data/wiki/podcast-ideas/",
+    "data/history/",
+    "data/runs/"
+  ],
+  "attempts": [],
+  "created_at": "2026-09-08T05:59:31Z",
+  "deadline": null,
+  "dedupe_key": "daily:2026-09-08:editorial-ideas",
+  "depends_on": [
+    "operation_d9ff337c2ab4f12449f6"
+  ],
+  "earliest_start": null,
+  "lease": null,
+  "max_attempts": 3,
+  "operation_id": "operation_b94fdfd47043e615dbe2",
+  "operation_type": "editorial_ideas",
+  "payload": {
+    "development_ids": [],
+    "entity_ids": [],
+    "idea_ids": [],
+    "inputs": {
+      "intended_local_date": "2026-09-08"
+    },
+    "prompt": "Propose or revise evidence-linked podcast ideas from accepted new research and older uncovered findings; do not force thin material into an episode."
+  },
+  "payload_hash": "a27c01c52a55d6e256b5c679483334956da19720d9bbbf87e51ac2d302b6012b",
+  "priority": 40,
+  "resource_budget": {
+    "cost_weight": "2.5",
+    "known_metered_usd_ceiling": null,
+    "profile": "editorial"
+  },
+  "result": null,
+  "schema_version": 1,
+  "source_refs": [],
+  "state": "queued",
+  "updated_at": "2026-09-08T05:59:31Z"
+}
