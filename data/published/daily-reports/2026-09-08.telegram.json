@@ -1,11 +1,11 @@
 {
-  "acknowledged_at": null,
+  "acknowledged_at": "2026-09-08T06:15:56Z",
   "attempt_count": 1,
   "delivery_run_id": "research-2026-09-08-34192710168",
   "destination_alias": "robotelier-listeners",
   "intent_at": "2026-09-08T06:15:52Z",
   "local_date": "2026-09-08",
-  "message_id": null,
+  "message_id": 1400,
   "message_sha256": "29eaf77ecfa7ad528a020045e3acaa6e3b75b3802563e42df269bb9af5c4c74a",
   "reason_code": null,
   "report_hash": "a0e56c6dbb40c0f1b662fbac41b845d5cd86069c025d28a7e5f239135e3b9242",
@@ -13,7 +13,7 @@
   "report_url": "https://Kabutojira.github.io/Robotelier/daily-reports/daily-report_20260908",
   "schema_version": 1,
   "source_commit": "0bf6d0e58d7eec2b6db6ed6f63f7806fd1c82c6d",
-  "state": "intent_written",
+  "state": "acknowledged",
   "summary_id": "daily_summary_92061d3d699a4bb6a100",
-  "updated_at": "2026-09-08T06:15:52Z"
+  "updated_at": "2026-09-08T06:15:56Z"
 }
