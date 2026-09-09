@@ -1,0 +1,104 @@
+{
+  "allowed_commands": [
+    "source register",
+    "source observe",
+    "media register",
+    "evidence record"
+  ],
+  "allowed_paths": [
+    "data/records/sources/",
+    "data/records/media/",
+    "data/records/evidence/",
+    "data/history/",
+    "data/runs/"
+  ],
+  "attempts": [
+    {
+      "attempt_id": "attempt_f1e00d4dc811ac616ad1",
+      "completed_at": "2026-09-09T06:08:08Z",
+      "cost_status": "unknown",
+      "known_metered_usd": null,
+      "lease_token_hash": "33380b80548921ee85861e4c18155f2ea14a61a55cba0ba4a708005d0e85408a",
+      "outcome": "failed",
+      "reason_code": "agent_run_invalid",
+      "result": {
+        "errors": [
+          "agent result is missing or invalid"
+        ]
+      },
+      "run_id": "research-2026-09-09-34317114090",
+      "started_at": "2026-09-09T06:05:12Z",
+      "supplied_usage": {}
+    },
+    {
+      "attempt_id": "attempt_01843890e3484b095c3d",
+      "completed_at": "2026-09-09T06:10:22Z",
+      "cost_status": "unknown",
+      "known_metered_usd": null,
+      "lease_token_hash": "2486b9bacb04bd191763d93004654a0953b5ab05d58b03f7f3071c8d55600f65",
+      "outcome": "failed",
+      "reason_code": "agent_run_invalid",
+      "result": {
+        "errors": [
+          "agent result is missing or invalid"
+        ]
+      },
+      "run_id": "research-2026-09-09-34317114090",
+      "started_at": "2026-09-09T06:08:08Z",
+      "supplied_usage": {}
+    },
+    {
+      "attempt_id": "attempt_7b24fb6c4499e101f81b",
+      "completed_at": "2026-09-09T06:12:24Z",
+      "cost_status": "unknown",
+      "known_metered_usd": null,
+      "lease_token_hash": "a678b6d1e5cf7b561e439e161e902041ea11433285ee20ed080e684282a1d1b9",
+      "outcome": "failed",
+      "reason_code": "agent_run_invalid",
+      "result": {
+        "errors": [
+          "agent result is missing or invalid"
+        ]
+      },
+      "run_id": "research-2026-09-09-34317114090",
+      "started_at": "2026-09-09T06:10:22Z",
+      "supplied_usage": {}
+    }
+  ],
+  "created_at": "2026-09-09T06:00:25Z",
+  "deadline": null,
+  "dedupe_key": "daily:2026-09-09:x-research",
+  "depends_on": [],
+  "earliest_start": null,
+  "lease": null,
+  "max_attempts": 3,
+  "operation_id": "operation_16dac9bb2c2d9199b3ab",
+  "operation_type": "x_research",
+  "payload": {
+    "development_ids": [],
+    "entity_ids": [],
+    "idea_ids": [],
+    "inputs": {
+      "intended_local_date": "2026-09-09",
+      "queries_path": "data/subscriptions/queries.json"
+    },
+    "prompt": "Run bounded read-only X-focused discovery with the controller-provisioned openai-codex/gpt-5.6-sol profile. Record resolvable originating-post evidence or an explicit degraded/unsourced outcome."
+  },
+  "payload_hash": "4845f9ca5c31b8e4efa1c69a9f22e06f5cad5c4e2f0426d79a7f8bdfefc08f07",
+  "priority": 90,
+  "resource_budget": {
+    "cost_weight": "5",
+    "known_metered_usd_ceiling": null,
+    "profile": "x"
+  },
+  "result": {
+    "errors": [
+      "agent result is missing or invalid"
+    ],
+    "reason_code": "agent_run_invalid"
+  },
+  "schema_version": 1,
+  "source_refs": [],
+  "state": "failed",
+  "updated_at": "2026-09-09T06:12:24Z"
+}
