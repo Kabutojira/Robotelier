@@ -1,0 +1,64 @@
+{
+  "dry_run": false,
+  "finalized_at": "2026-09-10T06:12:03Z",
+  "intended_local_date": "2026-09-10",
+  "maximum_operations": 20,
+  "phase": "finalized",
+  "prepared_at": "2026-09-10T06:00:10Z",
+  "production": {
+    "selection": {
+      "snapshot": {
+        "candidates": [],
+        "policy_version": "editorial-v1",
+        "reference_time": "2026-09-10T06:12:03Z",
+        "schema_version": 1,
+        "snapshot_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "status": "no_episode_insufficient_material"
+    },
+    "status": "no_episode_insufficient_material"
+  },
+  "publish_pages": true,
+  "queue": {
+    "ready": [
+      "operation_08a57ab1aa0ef1cf6b62",
+      "operation_74ab903aa1e5443f43ce"
+    ],
+    "terminalized": [
+      "operation_b94fdfd47043e615dbe2",
+      "operation_d045a99e83f3734f4fc6"
+    ],
+    "waiting": [
+      "operation_19ac3ca92d34c2b7cb08",
+      "operation_30316dd007f7d70524c2",
+      "operation_6699483221bc0b5dfbcc",
+      "operation_76373f0527df8da6e222",
+      "operation_b54b5062f5ce29319321",
+      "operation_f71aeabfdf9662873408"
+    ]
+  },
+  "report_hash": "145d25e67cd5dfb97c4cc4ed9d9aa5d24bbb802d70438fb4f0540b2ac900c2af",
+  "report_path": "data/wiki/daily-reports/daily-report_20260910.md",
+  "resume_id": null,
+  "run_id": "research-2026-09-10-34443268028",
+  "schema_version": 1,
+  "seeded_operations": [
+    "operation_08a57ab1aa0ef1cf6b62",
+    "operation_74ab903aa1e5443f43ce",
+    "operation_b54b5062f5ce29319321",
+    "operation_6699483221bc0b5dfbcc",
+    "operation_19ac3ca92d34c2b7cb08"
+  ],
+  "send_telegram": true,
+  "slot": {
+    "late_release_end_at": "2026-09-10T06:00:00Z",
+    "local_date": "2026-09-10",
+    "publication_at": "2026-09-10T03:07:00Z",
+    "recovery_at": "2026-09-10T04:17:00Z",
+    "release_at": "2026-09-10T04:00:00Z",
+    "research_at": "2026-09-10T01:17:00Z",
+    "soft_cutoff_at": "2026-09-10T02:45:00Z",
+    "timezone": "Europe/Rome"
+  },
+  "trigger": "schedule"
+}

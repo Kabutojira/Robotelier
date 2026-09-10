@@ -1,0 +1,39 @@
+{
+  "accepted_idea_count": 0,
+  "cadence": {
+    "activation_state": "activated",
+    "days_since_anchor": 3,
+    "deadline_local_date": "2026-09-14",
+    "last_listener_release_date": null,
+    "local_date": "2026-09-10",
+    "phase": "healthy",
+    "slot": {
+      "late_release_end_at": "2026-09-10T06:00:00Z",
+      "local_date": "2026-09-10",
+      "publication_at": "2026-09-10T03:07:00Z",
+      "recovery_at": "2026-09-10T04:17:00Z",
+      "release_at": "2026-09-10T04:00:00Z",
+      "research_at": "2026-09-10T01:17:00Z",
+      "soft_cutoff_at": "2026-09-10T02:45:00Z",
+      "timezone": "Europe/Rome"
+    },
+    "weekly_ready": true
+  },
+  "deferred_work": 12,
+  "generated_at": "2026-09-10T06:12:03Z",
+  "incidents": [],
+  "local_date": "2026-09-10",
+  "missing_media_metadata": 0,
+  "publication": {
+    "status": "absent"
+  },
+  "registered_media": 0,
+  "rejected_idea_count": 0,
+  "research_changes": 0,
+  "schema_version": 1,
+  "source_coverage": {
+    "coverage_complete": false,
+    "registered_sources": 0
+  },
+  "top_eligible_ideas": []
+}
