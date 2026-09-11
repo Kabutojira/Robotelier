@@ -9,38 +9,36 @@
     "data/runs/"
   ],
   "attempts": [],
-  "created_at": "2026-09-09T06:00:25Z",
+  "created_at": "2026-09-11T06:01:41Z",
   "deadline": null,
-  "dedupe_key": "daily:2026-09-09:editorial-review",
+  "dedupe_key": "daily:2026-09-11:editorial-review",
   "depends_on": [
-    "operation_30316dd007f7d70524c2"
+    "operation_e5ddbc9b7b061bc6886a"
   ],
   "earliest_start": null,
   "lease": null,
   "max_attempts": 3,
-  "operation_id": "operation_f71aeabfdf9662873408",
+  "operation_id": "operation_006540acb252fcab016d",
   "operation_type": "editorial_review",
   "payload": {
     "development_ids": [],
     "entity_ids": [],
     "idea_ids": [],
     "inputs": {
-      "intended_local_date": "2026-09-09"
+      "intended_local_date": "2026-09-11"
     },
     "prompt": "Independently review the full active idea set, record rubric scores and readiness gates, and leave deterministic selection to the controller."
   },
-  "payload_hash": "5bc77089236edb4dbec7fd6e2e58ac3187d77730fa789b847d73d33aa4f94d86",
+  "payload_hash": "77bee1b6d0f44f6efdb198b359cad99f1e81b351ff888ee186097f55ac3e32c8",
   "priority": 30,
   "resource_budget": {
     "cost_weight": "2.5",
     "known_metered_usd_ceiling": null,
     "profile": "editorial"
   },
-  "result": {
-    "reason_code": "dependency_terminal"
-  },
+  "result": null,
   "schema_version": 1,
   "source_refs": [],
-  "state": "blocked",
+  "state": "queued",
   "updated_at": "2026-09-11T06:01:41Z"
 }

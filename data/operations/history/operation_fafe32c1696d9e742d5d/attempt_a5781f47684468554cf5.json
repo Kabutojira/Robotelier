@@ -1,0 +1,17 @@
+{
+  "attempt_id": "attempt_a5781f47684468554cf5",
+  "completed_at": "2026-09-11T06:11:33Z",
+  "cost_status": "unknown",
+  "known_metered_usd": null,
+  "lease_token_hash": "e6467a3e8f7b592f0f55c4d26c60556e908badf038dd81ec2aefd270867b8978",
+  "outcome": "failed",
+  "reason_code": "agent_run_invalid",
+  "result": {
+    "errors": [
+      "agent result is missing or invalid"
+    ]
+  },
+  "run_id": "research-2026-09-11-34568168276",
+  "started_at": "2026-09-11T06:10:30Z",
+  "supplied_usage": {}
+}

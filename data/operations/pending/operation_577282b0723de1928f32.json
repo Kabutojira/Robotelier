@@ -8,38 +8,36 @@
     "data/runs/"
   ],
   "attempts": [],
-  "created_at": "2026-09-10T06:00:10Z",
+  "created_at": "2026-09-11T06:01:41Z",
   "deadline": null,
-  "dedupe_key": "daily:2026-09-10:triage",
+  "dedupe_key": "daily:2026-09-11:triage",
   "depends_on": [
-    "operation_08a57ab1aa0ef1cf6b62"
+    "operation_5ffb483eca36429297e7"
   ],
   "earliest_start": null,
   "lease": null,
   "max_attempts": 3,
-  "operation_id": "operation_b54b5062f5ce29319321",
+  "operation_id": "operation_577282b0723de1928f32",
   "operation_type": "triage",
   "payload": {
     "development_ids": [],
     "entity_ids": [],
     "idea_ids": [],
     "inputs": {
-      "intended_local_date": "2026-09-10"
+      "intended_local_date": "2026-09-11"
     },
     "prompt": "Classify registered candidates and enqueue at most five specific substantive investigations. Treat X degradation as a visible coverage gap, not a blocker for supported non-X research."
   },
-  "payload_hash": "c06ac7ce9bc94988c68a93c9e7fa6a4b6863da11674b36e9527585f0798f18a4",
+  "payload_hash": "7060e6aa7ff33cbdfd9b56baf50e04263c814d74bd071fe874d435b61ae3aee5",
   "priority": 70,
   "resource_budget": {
     "cost_weight": "1",
     "known_metered_usd_ceiling": null,
     "profile": "scout"
   },
-  "result": {
-    "reason_code": "dependency_terminal"
-  },
+  "result": null,
   "schema_version": 1,
   "source_refs": [],
-  "state": "blocked",
+  "state": "queued",
   "updated_at": "2026-09-11T06:01:41Z"
 }
