@@ -36,9 +36,11 @@
     "known_metered_usd_ceiling": null,
     "profile": "editorial"
   },
-  "result": null,
+  "result": {
+    "reason_code": "dependency_terminal"
+  },
   "schema_version": 1,
   "source_refs": [],
-  "state": "queued",
-  "updated_at": "2026-09-11T06:01:41Z"
+  "state": "blocked",
+  "updated_at": "2026-09-12T05:48:51Z"
 }

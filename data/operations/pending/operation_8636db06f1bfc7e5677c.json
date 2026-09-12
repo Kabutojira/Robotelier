@@ -9,38 +9,36 @@
     "data/runs/"
   ],
   "attempts": [],
-  "created_at": "2026-09-10T06:00:10Z",
+  "created_at": "2026-09-12T05:48:51Z",
   "deadline": null,
-  "dedupe_key": "daily:2026-09-10:editorial-ideas",
+  "dedupe_key": "daily:2026-09-12:editorial-ideas",
   "depends_on": [
-    "operation_b54b5062f5ce29319321"
+    "operation_b01bdcfa5ba339faa416"
   ],
   "earliest_start": null,
   "lease": null,
   "max_attempts": 3,
-  "operation_id": "operation_6699483221bc0b5dfbcc",
+  "operation_id": "operation_8636db06f1bfc7e5677c",
   "operation_type": "editorial_ideas",
   "payload": {
     "development_ids": [],
     "entity_ids": [],
     "idea_ids": [],
     "inputs": {
-      "intended_local_date": "2026-09-10"
+      "intended_local_date": "2026-09-12"
     },
     "prompt": "Propose or revise evidence-linked podcast ideas from accepted new research and older uncovered findings; do not force thin material into an episode."
   },
-  "payload_hash": "933db7c11b4d14dbc3ff0d59f3b1f4aaca6662e8563deff8cc529b58702572cb",
+  "payload_hash": "019a000a98f79cf5c77475e41d7ab6381738775605d6a986a36ed281155a2d64",
   "priority": 40,
   "resource_budget": {
     "cost_weight": "2.5",
     "known_metered_usd_ceiling": null,
     "profile": "editorial"
   },
-  "result": {
-    "reason_code": "dependency_terminal"
-  },
+  "result": null,
   "schema_version": 1,
   "source_refs": [],
-  "state": "blocked",
+  "state": "queued",
   "updated_at": "2026-09-12T05:48:51Z"
 }
